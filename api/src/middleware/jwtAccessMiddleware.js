@@ -5,7 +5,7 @@ const { Admin } = require("../model/userModel")
 
 exports.jwtAccessMiddleware = async function (req, res, next) {
     try {
-        if (!req.cookies.length) {
+        if (!req.cookies) {
             return res.status(403).send({
                 success: false,
                 data: null,
