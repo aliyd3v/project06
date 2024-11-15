@@ -13,6 +13,7 @@ function tokenGenerate(id) {
 exports.login = async (req, res) => {
     const { username, password } = req.body
     try {
+        res.clearCookie('authcookie')
         const user = await Admin.findOne({ username: username })
         if (!user) {
             return res.status(403).send({
@@ -34,9 +35,21 @@ exports.login = async (req, res) => {
             success: true,
             error: false,
             data: {
-                message: "Login success.",
-                token
+                message: "Login success."
             }
+        })
+    } catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.logout = async (req, res) => {
+    try {
+        res.clearCookie('authcookie')
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: { message: "Logout has been successful!" }
         })
     } catch (error) {
         errorHandling(error, res)

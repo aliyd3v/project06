@@ -4,7 +4,9 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const { cookieParserKey } = require('./src/config/config')
 const { connectMongodb } = require('./src/db/mongodb')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({
     extended: false
