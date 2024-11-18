@@ -5,7 +5,9 @@ const mealSchema = new Schema({
     category: {
         type: Schema.Types.ObjectId,
         ref: 'Category'
-    }
+    },
+    description: String,
+    price: Number
 })
 
 exports.Meal = model('Meal', mealSchema)
