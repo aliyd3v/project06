@@ -2,33 +2,32 @@ const { Admin } = require("../model/userModel")
 const { errorHandling } = require("./errorController")
 
 exports.adminCreate = async (req, res) => {
-    const { username, password } = req.body
     try {
-        // Checking username and password to exists.
-        if (!username) {
+        // Result validation.
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorMessage = errors.array().map(error => error.msg)
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: `Username cannot be empty! Please enter a username.` }
+                error: { message: errorMessage }
             })
         }
-        if (!password) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: `Password cannot be empty! Please enter a password.` }
-            })
-        }
-        const admin = await Admin.create({ username: username, password: password })
+        const data = matchedData(req)
+
+        // Writing new admin to database.
+        const admin = await Admin.create({ username: data.username, password: data.password })
+
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: `Admin has been created successful.`,
-                amdin: { username: username }
+                message: `Admin ${data.username} has been created successful.`
             }
         })
     } catch (error) {
+        // Error handling.
         errorHandling(error, res)
     }
 }
@@ -42,6 +41,7 @@ exports.getAllAdmins = async (req, res) => {
             data: { admins }
         })
     } catch (error) {
+        // Error handling.
         errorHandling(error, res)
     }
 }

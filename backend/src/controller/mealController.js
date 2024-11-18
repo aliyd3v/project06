@@ -1,22 +1,61 @@
+const { Category } = require("../model/categoryModel")
 const { Meal } = require("../model/mealModel")
 const { errorHandling } = require("./errorController")
 
 exports.createMeal = async (req, res) => {
-    const { body } = req
     try {
+        // Result validation.
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorMessage = errors.array().map(error => error.msg)
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: { message: errorMessage }
+            })
+        }
+        const data = matchedData(req)
+
+        // Checking name a meal to exists. (If mael exists with current name return error.)
+        const condidat = await Meal.findOne({ name: data.name })
+        if (condidat) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: { message: "Name a meal is already exists! Please enter another name." }
+            })
+        }
+
+        // Checking category to valid and exists.
+        const selectedCategory = await Category.findById(data.category)
+        if (!selectedCategory) {
+            // Responsing.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: { message: "Selected category is not found!" }
+            })
+        }
+
+        // Writing new meal to database.
         const newMeal = await Meal.create({
-            name: body.name,
-            category: body.categoryId
+            name: data.name,
+            description: data.description,
+            price: data.price,
+            category: data.category
         })
+
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Meal has been created successful.",
-                meal: { name: `${body.name}` }
+                message: "Meal has been created successful."
             }
         })
     } catch (error) {
+        // Error handling.
         errorHandling(error, res)
     }
 }
@@ -75,7 +114,7 @@ exports.getOneMeal = async (req, res) => {
 
 
 exports.updateOneMeal = async (req, res) => {
-    const { body, params: { id } } = req
+    const { params: { id } } = req
     try {
         // Checking id to valid.
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -95,29 +134,58 @@ exports.updateOneMeal = async (req, res) => {
             })
         }
 
-        if (!body.name || !body.category) {
+        // Result validation.
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorMessage = errors.array().map(error => error.msg)
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: "Meal mame and category is required!" }
+                error: { message: errorMessage }
             })
         }
+        const data = matchedData(req)
 
-        if (meal.name == body.name || meal.category == body.category) {
+        // Checking 
+        if (meal.name == data.name || meal.category == data.category || meal.description == data.description || meal.price == data.price) {
             return res.status(200).send({
                 success: true,
                 error: false,
                 data: {
-                    message: "Meal has been getted successful.",
-                    category
+                    message: "Meal has been updated successful."
                 }
             })
         }
+        if (meal.name != data.name) {
+            const condidat = await Meal.findOne({ name: data.name })
+            if (condidat) {
+                // Responsing.
+                return res.status(400).send({
+                    success: false,
+                    data: null,
+                    error: { message: "Name a meal is already exists! Please enter another name." }
+                })
+            }
+        }
+        if (meal.category != data.category) {
+            const selectedCategory = await Category.findById(data.category)
+            if (!selectedCategory) {
+                // Responsing.
+                return res.status(404).send({
+                    success: false,
+                    data: null,
+                    error: { message: "Selected category is not found!" }
+                })
+            }
+        }
 
+        // Writing changes to database.
         const updateMeal = await Meal.findByIdAndUpdate(id, {
             ...meal,
-            name: body.name,
-            category: body.category
+            name: data.name,
+            description: data.description,
+            price: data.price,
+            category: data.category
         })
 
         return res.status(201).send({
@@ -157,6 +225,7 @@ exports.deleteOneMeal = async (req, res) => {
         // Deleting meal from database.
         await Meal.findByIdAndDelete(id)
 
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
@@ -165,6 +234,7 @@ exports.deleteOneMeal = async (req, res) => {
             }
         })
     } catch (error) {
+        // Error handling.
         errorHandling(error, res)
     }
 }
