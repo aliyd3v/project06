@@ -4,6 +4,7 @@ const { errorHandling } = require("./errorController")
 exports.adminCreate = async (req, res) => {
     const { username, password } = req.body
     try {
+        // Checking username and password to exists.
         if (!username) {
             return res.status(400).send({
                 success: false,
