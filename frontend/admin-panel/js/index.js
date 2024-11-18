@@ -28,9 +28,8 @@ function logout() {
 }
 
 
-let cotigoris = document.querySelector("#cotigories")
-
-cotigoris.addEventListener("click", ()=>{
-    window.location.href="cotigories.html"
+let products = document.querySelector("#products")
+ products.addEventListener("click", ()=>{
+    window.location.href="product.html"
 
 })
