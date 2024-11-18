@@ -91,7 +91,7 @@ exports.getOneCategory = async (req, res) => {
 }
 
 exports.updateOneCategory = async (req, res) => {
-    const { body, params: { id } } = req
+    const { params: { id } } = req
     try {
         // Checking id to valid.
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -102,6 +102,7 @@ exports.updateOneCategory = async (req, res) => {
             })
         }
 
+        // Checking category to exists.
         const category = await Category.findById(id).populate('meals', 'name')
         if (!category) {
             return res.status(404).send({
@@ -111,39 +112,46 @@ exports.updateOneCategory = async (req, res) => {
             })
         }
 
-        if (!body.name) {
+        // Result validation.
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorMessage = errors.array().map(error => error.msg)
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: "Category name is required!" }
+                error: { message: errorMessage }
             })
         }
+        const data = matchedData(req)
 
-        if (category.name == body.name) {
+        // Checking for changes.
+        if (category.name == data.name) {
+            // Responsning.
             return res.status(200).send({
                 success: true,
                 error: false,
                 data: {
-                    message: "Category has been getted successful.",
-                    category
+                    message: "Category has been getted successful."
                 }
             })
         }
 
+        // Writing updates to database.
         const updateCategory = await Category.findByIdAndUpdate(id, {
             ...category,
-            name: body.name
+            name: data.name
         })
 
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Category has been updated successful.",
-                updateCategory
+                message: "Category has been updated successful."
             }
         })
     } catch (error) {
+        // Error handling.
         errorHandling(error, res)
     }
 }
