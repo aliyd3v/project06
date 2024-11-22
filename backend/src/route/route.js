@@ -19,21 +19,21 @@ router
     .get('/logout', logout)
 
     // Admin route.
-    .post('/admin-create', jwtAccessMiddleware, checkSchema(createAdminValidationSchema), adminCreate)
-    .get('/admins', jwtAccessMiddleware, getAllAdmins)
+    .post('/admin-create', checkSchema(createAdminValidationSchema), adminCreate)
+    .get('/admins', getAllAdmins)
 
     // Category route.
-    .post('/category/create', jwtAccessMiddleware, checkSchema(categoryCreateValidationSchema), createCategory)
-    .get('/category', jwtAccessMiddleware, getAllCategories)
-    .get('/category/:id', jwtAccessMiddleware, getOneCategory)
-    .post('/category/:id/update', jwtAccessMiddleware, checkSchema(categoryUpdateValidationSchema), updateOneCategory)
-    .post('/category/:id/delete', jwtAccessMiddleware, deleteOneCategory)
+    .post('/category/create', checkSchema(categoryCreateValidationSchema), createCategory)
+    .get('/category', getAllCategories)
+    .get('/category/:id', getOneCategory)
+    .post('/category/:id/update', checkSchema(categoryUpdateValidationSchema), updateOneCategory)
+    .post('/category/:id/delete', deleteOneCategory)
 
     // Meal route.
-    .post('/meal/create', jwtAccessMiddleware, checkSchema(mealCreateValidationSchema), createMeal)
-    .post('/meal', jwtAccessMiddleware, getAllMeals)
-    .post('/meal/:id', jwtAccessMiddleware, getOneMeal)
-    .post('/meal/:id/update', jwtAccessMiddleware, checkSchema(mealUpdateValidationSchema), updateOneMeal)
-    .post('/meal/:id/delete', jwtAccessMiddleware, deleteOneMeal)
+    .post('/meal/create', checkSchema(mealCreateValidationSchema), createMeal)
+    .post('/meal', getAllMeals)
+    .post('/meal/:id', getOneMeal)
+    .post('/meal/:id/update', checkSchema(mealUpdateValidationSchema), updateOneMeal)
+    .post('/meal/:id/delete', deleteOneMeal)
 
 module.exports = router
