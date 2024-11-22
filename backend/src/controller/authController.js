@@ -19,6 +19,7 @@ exports.login = async (req, res) => {
         // Result validation.
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
+            console.log(errors)
             const errorMessage = errors.array().map(error => error.msg)
             return res.status(400).send({
                 success: false,
