@@ -202,7 +202,7 @@
   position: relative;
 }
 
-.formField input,.formField textarea {
+.formField input,.formField textarea,.formField select{
   padding: 5px  10px;
   outline: none;
   border: none;
@@ -218,9 +218,11 @@
 .formField input:hover,
 .formField input:focus,
 .formField textarea:hover,
-.formField textarea:active {
+.formField textarea:active,
+.formField select:hover,
+.formField select:active{
   box-shadow: 0 0 0 2px white;
-  appearance: none;
+  /* appearance: none; */
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{
@@ -252,3 +254,123 @@ input[type=number]::-webkit-outer-spin-button{
   .group:hover .group-hover\:text-blue-800 {
   color: #2b6cb0;
   }
+
+
+  
+  .select-box {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+    font-size: 18px;
+    color: #60666d;
+  
+    @media (min-width: 768px) {
+      width: 70%;
+    }
+  
+    @media (min-width: 992px) {
+      width: 50%;
+    }
+  
+    @media (min-width: 1200px) {
+      width: 30%;
+    }
+  }
+  
+  .select-box__current {
+    position: relative;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+  
+    &:hover {
+      border-color: #888;
+    }
+  
+    &:focus {
+      border-color: #546c84;
+    }
+  }
+  
+  .select-box__icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: 20px;
+    opacity: 0.3;
+    transition: transform 0.2s ease;
+  
+    .select-box__current:focus & {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+  
+  .select-box__value {
+    display: flex;
+    align-items: center;
+  }
+  
+  .select-box__input {
+    display: none;
+  }
+  
+  .select-box__input-text {
+    display: none;
+    width: 100%;
+  }
+  
+  .select-box__input:checked + .select-box__input-text {
+    display: block;
+  }
+  
+  .select-box__list {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+  
+  .select-box__current:focus + .select-box__list {
+    opacity: 1;
+    visibility: visible;
+    transform: scaleY(1);
+  }
+  
+  .select-box__option {
+    display: block;
+    padding: 15px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  
+    &:hover,
+    &:focus {
+      background-color: #f0f0f0;
+      color: #546c84;
+    }
+  }
+  
+  .select-box__option:active {
+    background-color: #e6e6e6;
+  }
+  

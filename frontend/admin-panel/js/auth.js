@@ -20,7 +20,7 @@ function logIn(username, password) {
         .then(response => {
             if (response.success) {
 
-                return window.location.href = "index.html"; // Sahifani o'zgartirish
+                // return window.location.href = "index.html"; // Sahifani o'zgartirish
             } else {
                 alert("Login failed: " + response.message);
             }

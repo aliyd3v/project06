@@ -71,56 +71,44 @@
             </div>
             <!-- =========================================menu-Cotigoris=============================== -->
             <!-- =========================================menu-Cotigoris=============================== -->
-            <div class="w-[300px] bg-[#111] py-3 px-5 rounded-xl ml-3  cursor-pointer">
-                <div class="h-9 w-full flex items-center gap-4">
-                    <i class="fa-solid fa-house text-xl text-[#ffc355] "></i>
-                    <p class="text-[#ffc335]">Home</p>
-                </div>
+            <div id="home" class="w-[300px] bg-[#111] py-3 px-5 rounded-xl ml-3  cursor-pointer">
+              <div class="h-9 w-full flex items-center gap-4">
+                  <i class="fa-solid fa-house text-xl text-[#ffc355] "></i> <p class="text-[#ffc335]">Home</p>
+              </div>
             </div>
-
             <!-- =000 -->
-            <div class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500  hover:-ml-3     ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-file  text-xl text-white"></i>
-                    <p class="text-white ">Order</p>
-                </div>
+            <div id="order" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500  hover:-ml-3     ">
+              <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                  <i class="fa-solid fa-file  text-xl text-white"></i><p class="text-white ">Order</p>
+              </div>
             </div>
-
             <!--  -->
-
-
-            <div class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500    hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-clock text-xl text-white"></i>
-                    <p class="text-white">History</p>
-                </div>
+            <div id="history" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500    hover:-ml-3 ">
+              <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                  <i class="fa-solid fa-clock text-xl text-white"></i> <p class="text-white">History</p>
+              </div>
             </div>
 
             <!-- ==== -->
-            <div id="products"
-                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-folder-open  text-white"></i>
-                    <p class="text-white">Pruducts</p>
-                </div>
+            <div id="products" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+              <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+              <i class="fa-solid fa-folder-open  text-white"></i> <p class="text-white">Pruducts</p>
+              </div>
             </div>
-            <!-- ==== -->
-            <!-- ==== -->
-            <div id="cotigories"
-                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-layer-group text-xl text-white"></i>
-                    <p class="text-white">Categories</p>
-                </div>
+              <!-- ==== -->
+                <!-- ==== -->
+            <div id="cotigories" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+              <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                  <i class="fa-solid fa-layer-group text-xl text-white"></i> 
+                   <p class="text-white">Categories</p>
+              </div>
             </div>
-            <!-- ==== -->
-            <button id="logout"
-                class="w-[300px] boss bg-red-600 py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-right-from-bracket text-white"></i>
-                    <p class="text-white">Log out</p>
-                </div>
-            </button>
+              <!-- ==== -->
+              <button id="logout" class="w-[300px] boss bg-red-600 py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+                  <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                      <i class="fa-solid fa-right-from-bracket text-white"></i><p class="text-white">Log out</p>
+                  </div>
+                </button>
         </div>
         <!-- ===============================Cotigories=====================  -->
         <div class=" w-[1400px]">
@@ -133,11 +121,11 @@
                         Product list
                     </h2>
                     <div class="w-full h-20 rounded-xl bg-main-bg  flex justify-between px-7 items-center">
-                        <div class="flex">
+                        <div class="flex gap-3  formField">
 
                             <input type="text">
-                            <div class="button  !h-8 
-                            w-241 bg-green-600">
+                            <div class="button  h-full 
+                            w-241 bg-[#222]">
                                 <div class="button-wrapper">
                                     <div class="text">Search</div>
                                     <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
@@ -157,7 +145,40 @@
 
 
                     <div id="page" class="flex">
-
+                      <div style="margin-top:20px;" class="bg-main-bg flex items-center justify-around mt-6 w-full h-60 rounded-xl mx-auto sm:mr-0 group cursor-pointer lg:mx-auto  transition-all duration-500">
+                        <div class="rounded-xl">
+                          <img src="${item.image}" alt="face cream image" class="w-full h-52 aspect-square object-cover">
+                        </div>
+                        <div class="w-[70%] h-52">
+                          <div class="flex items-center justify-between">
+                            <h6 class="font-semibold text-xl leading-8 text-white transition-all duration-500 group-hover:text-indigo-600">
+                              ${item.title}
+                            </h6>
+                            <h6 class="font-semibold text-xl leading-8 text-indigo-600">
+                              ${item.price}
+                            </h6>
+                          </div>
+                          <div class="mt-3">
+                            <ul class="list-none overflow-scroll h-32 w-[300px]">
+                              <li class="mt-2 font-normal text-sm leading-6 text-gray-500">${item.description}</li>
+                            </ul>
+                          </div>
+                          <div class="flex gap-3 ml-[600px]">
+                            <div class="button bg-green-600">
+                              <div class="button-wrapper">
+                                <div class="text">Edit</div>
+                                <span class="icon"><i class="fa-solid fa-pen"></i></span>
+                              </div>
+                            </div>
+                            <div class="button bg-red-600 open-del-pop">
+                              <div class="button-wrapper">
+                                <div class="text">Del</div>
+                                <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div id="data-container"></div>
                     <div id="pagination" class="flex justify-center items-center mt-5 text-white"></div>
@@ -204,6 +225,13 @@
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>title</h4> <input type="text"></label>
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>description</h4> <textarea name="" id=""></textarea></label>
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color text-xl ">*</span>Price</h4> <input type="number"></label>
+                        <label class="my-4 block">
+                          <h4 class="text-white text-xl"><span class="text-text-color text-xl ">*</span>Cotigories</h4>
+                          <select class="w-[80%]" name="" id="select-cotigories">
+                            <option value="" class="mt-6">saload</option>
+                            <option value="">shashlik</option>
+                          </select>
+                        </label>
                    
 
                     </form>
@@ -211,7 +239,14 @@
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>заголовок</h4> <input type="text"></label>
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>описание</h4> <textarea name="" id=""></textarea></label>
                         <label class="my-4 block" for=""><h4 class="text-white text-xl"><span class="text-text-color text-xl ">*</span>Цена</h4> <input type="number"></label>
-                   
+                        <label class="my-4 block">
+                          <h4 class="text-white text-xl"><span class="text-text-color text-xl ">*</span>Котигории</h4>
+                          <select class="w-[80%]" name="" id="select-cotigories">
+                            <option value="" class="mt-6">saload</option>
+                            <option value="">shashlik</option>
+                          </select>
+                     
+                        </label>
 
                     </form>
 

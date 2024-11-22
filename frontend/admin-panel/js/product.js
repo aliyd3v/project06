@@ -1,3 +1,42 @@
+
+
+// let home = document.querySelector("#home")
+// home.addEventListener("click" , () => {
+//     window.localStorage.href = "index.html"
+// })
+
+let products = document.querySelector("#products")
+products.addEventListener("click", () => {
+    window.location.href = "product.html"
+
+})
+
+
+let cotigories = document.querySelector("#cotigories")
+cotigories.addEventListener("click", () => {
+    window.location.href = "cotigories.html"
+
+})
+
+let history = document.querySelector("#history")
+history.addEventListener("click", () => {
+    window.location.href = "history.html"
+
+})
+
+
+let order = document.querySelector("#order")
+order.addEventListener("click", () => {
+    window.location.href = "order.html"
+
+})
+
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
     // Ma'lumotlar ro'yxati
     const data = Array.from({ length: 15 }, (_, i) => ({
