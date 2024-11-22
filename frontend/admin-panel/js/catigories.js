@@ -94,6 +94,7 @@ function getCatigories() {
     //         ]
     //     }
     // }
+    const response = fetch('http://localhost:5050/category')
         .then(response => {
             return response.json();
         })
