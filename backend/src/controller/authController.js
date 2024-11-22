@@ -47,14 +47,19 @@ exports.login = async (req, res) => {
 
         // Writing cookie.
         const token = tokenGenerate(user._id)
-        res.cookie('authcookie', token)
+        res.cookie('authcookie', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict'
+        })
 
         // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Login success."
+                message: "Login success.",
+                token
             }
         })
     } catch (error) {
