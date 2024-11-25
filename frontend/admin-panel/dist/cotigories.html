@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../src/output.css">
-    <link rel="stylesheet" href="../src/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css" />
-
-
+    <link rel="stylesheet" href="../src/output.css">
+    <link rel="stylesheet" href="../src/style.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 </head>
 
 <body class="bg-black">
@@ -35,7 +33,7 @@
         <div class="px-5 h-full object-cover rounded-xl bg-[#111] w-[23%] flex justify-between items-center">
             <a href="">
 
-                <i class="fa-solid fa-bell text-3xl text-[white] duration-500 cursor-pointer hover:text-[#ffc335] "></i>
+                <i class="fa-solid fa-bell text-3xl text-white duration-500 cursor-pointer hover:text-[#ffc335] "></i>
             </a>
             <a href="">
 
@@ -51,10 +49,7 @@
             </div>
         </div>
     </header>
-
-
-    <!-- ============================= -->
-    <main class="my-10 mx-auto w-[1400px] flex gap-5">
+    <main class="my-10 mx-auto w-[1400px] flex justify-between gap-5">
         <!-- ================================= menu ============================================== -->
         <div class="flex flex-col gap-2 w-[300px]">
             <!-- =================================menu-profil=============================== -->
@@ -70,10 +65,10 @@
                 </a>
             </div>
             <!-- =========================================menu-Cotigoris=============================== -->
-            <div class="w-[300px] bg-[#111] py-3 px-5 rounded-xl  cursor-pointer hover:-ml-3 ">
+            <div class="w-[300px] bg-[#111] py-3 px-5 rounded-xl ml-3  cursor-pointer">
                 <div class="h-9 w-full flex items-center gap-4">
-                    <i class="fa-solid fa-house text-xl text-white "></i>
-                    <p class="text-white">Home</p>
+                    <i class="fa-solid fa-house text-xl text-[#ffc355] "></i>
+                    <p class="text-[#ffc335]">Home</p>
                 </div>
             </div>
 
@@ -96,126 +91,104 @@
             </div>
 
             <!-- ==== -->
-            <div class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500 ml-3   hover: ">
+            <div id="products"
+                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
                 <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-layer-group text-xl text-text-color"></i>
-                    <p class="text-text-color">Categories</p>
+                    <i class="fa-solid fa-folder-open  text-white"></i>
+                    <p class="text-white">Pruducts</p>
                 </div>
             </div>
+            <!-- ==== -->
+            <!-- ==== -->
+            <div id="cotigories"
+                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                    <i class="fa-solid fa-layer-group text-xl text-white"></i>
+                    <p class="text-white">Categories</p>
+                </div>
+            </div>
+            <!-- ==== -->
+            <button id="logout"
+                class="w-[300px] boss bg-red-600 py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                    <i class="fa-solid fa-right-from-bracket text-white"></i>
+                    <p class="text-white">Log out</p>
+                </div>
+            </button>
         </div>
         <!-- ===============================Cotigories=====================  -->
-        <div class=" w-[11 00px]">
-
-            <div class="flex  bg-main-bg w-[100%] py-6 px-5 rounded-xl gap-4    overflow-x-scroll">
 
 
-
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
+        <div class=" w-full ">
+            <div class="bg-main-bg p-5 items-center flex justify-between w-full h-20 rounded-xl mb-5">
+                <p class="text-white font-bold  text-2xl">Cotigories: </p>
+                <div class="">
+                    <div id="add-btn" class="button bg-green-600">
+                        <div class="button-wrapper">
+                            <div class="text">Add</div>
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        </div>
                     </div>
-                    <p class="text-white mt-4">Salad</p>
                 </div>
-                <!-- salad box end -->
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
-                    </div>
-                    <p class="text-white mt-4">All</p>
-                </div>
-                <!-- salad box end -->
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
-                    </div>
-                    <p class="text-white mt-4">Salad</p>
-                </div>
-                <!-- salad box end -->
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
-                    </div>
-                    <p class="text-white mt-4">Salad</p>
-                </div>
-                <!-- salad box end -->
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
-                    </div>
-                    <p class="text-white mt-4">Salad</p>
-                </div>
-                <!-- salad box end -->
-                <!-- salad box -->
-                <div class="w-40 h-40 rounded-xl     text-center col-span-2 bg-black">
-                    <div class="w-32 mx-auto -mt-5 rounded-full overflow-hidden">
-
-                        <img class="w-full" src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp"
-                            alt="salad">
-                    </div>
-                    <p class="text-white mt-4">Salad</p>
-                </div>
-                <!-- salad box end -->
-
-
-
             </div>
 
-            <section class="py-24">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 class="font-manrope font-bold text-4xl text-white mb-8 max-lg:text-center">
-                        Product list
-                    </h2>
-                    <div id="page" class="flex">
-                    </div>
-                    <div id="data-container"></div>
-                    <div id="pagination" class="flex justify-center items-center mt-5 text-white"></div>
-                </div>
+            <div id="pruduct-container" class="flex  flex-col bg-main-bg w-[100%] py-6 px-5 rounded-xl gap-5 list-none   overflow-x-scroll cotigories-container">
 
-            </section>
 
-        </div>
+
+                <!-- salad box -->
+               
+                <!-- Salad end -->
+
+            </div>
 
     </main>
-    <!--del lkjsdl -->
 
-    <div id="del-popup" class=" place-items-center hidden  fixed top-0  backdrop-blur w-[100vw] z-50 h-[100vh] ">
-        <div class="w-[400px] h-[230px] select-none  rounded-xl p-3  top-0 left-0  bg-main-bg">
-            <button id="close-del-popup" class="w-full text-end outline-none"><i
-                    class="fa-solid fa-x text-p-color"></i></button>
+    <!-- EDIT -->
+    <div id="cotigory-edit" class="w-screen hidden z-50 h-screen backdrop-blur fixed top-0  place-items-center">
+        <div class="bg-main-bg w-[400px] p-4  rounded-xl">
+            <form action="" class="formField">
 
-            <div class="rounded-full border-4 mx-auto my-2 border-red-600 grid place-items-center h-16 w-16"><i
-                    class="fa-solid fa-exclamation text-4xl text-red-600"></i></div>
-            <p class="text-center text-p-color">Are you sure you want to delete this user?</p>
-            <div class="text-center my-5">
-                <button id="del-pruduct"
-                    class="py-2 px-4 mx-2 inline-block bg-red-600  rounded-lg text-white font-bold">Yes, I'm
-                    sure</button>
-                <button id="del-canceling" class="py-2 px-4 mx-2 inline-block border rounded-lg text-p-color">No,
-                    cencel</button>
+                <label class="my-4 block" for="">
+                    <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4> <input
+                        type="text">
+                </label>
+               
+                <label>
+                    <input type="file" id="imageUpload" accept="image/*" />
+                    <div class="w-32 h-32 rounded-full border overflow-hidden mt-3 ">
+                        <img id="previewImage" class=" w-full object-cover hidden"
+                            src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp" alt="salad">
+                    </div>
 
-            </div>
+
+                </label>
+
+
+                <div class="flex gap-3 mt-4">
+                    <div class="button bg-green-600">
+                        <div class="button-wrapper">
+                            <div class="text">Edit</div>
+                            <span class="icon"><i class="fa-solid fa-pen"></i></span>
+                        </div>
+                    </div>
+
+                    <div id="closeEdit" class="button border border-[#333] text-[#333] !duration-500  hover:border-white hover:text-white">
+                   
+                            <div class=" block mt-1  font-bold">close</div>
+                         
+                   
+                    </div>
+                    
+                </div>
+            </form>
         </div>
+
     </div>
 
 
-    <script src="../js/cotigories.js"></script>
 
-
+    <script src="../js/catigories.js"></script>
 </body>
 
 </html>

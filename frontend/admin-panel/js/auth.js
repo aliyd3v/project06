@@ -11,7 +11,7 @@ form.addEventListener("submit", (event) => {
 });
 
 function logIn(username, password) {
-    fetch('http://192.168.0.118:5050/login', {
+    fetch('http://localhost:5050/login', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username, password: password })
@@ -20,7 +20,7 @@ function logIn(username, password) {
         .then(response => {
             if (response.success) {
 
-                return window.location.href = "index.html"; // Sahifani o'zgartirish
+                // return window.location.href = "index.html"; // Sahifani o'zgartirish
             } else {
                 alert("Login failed: " + response.message);
             }

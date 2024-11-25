@@ -2,11 +2,11 @@ let logOut = document.getElementById("logout")
 
 logOut.addEventListener("click", logout)
 function logout() {
-    console.log("salom");
+ 
 
 
 
-    fetch('http://192.168.0.118:5050/logout',
+    fetch('http://localhost:5050/logout',
         {
             method: "GET"
         }
@@ -28,9 +28,36 @@ function logout() {
 }
 
 
-let cotigoris = document.querySelector("#cotigories")
 
-cotigoris.addEventListener("click", ()=>{
-    window.location.href="cotigories.html"
+
+
+let home = document.querySelector("#home")
+home.addEventListener("click" , () => {
+    window.localStorage.href = "index.html"
+})
+
+let products = document.querySelector("#products")
+products.addEventListener("click", () => {
+    window.location.href = "product.html"
+
+})
+
+
+let cotigories = document.querySelector("#cotigories")
+cotigories.addEventListener("click", () => {
+    window.location.href = "cotigories.html"
+
+})
+
+let history = document.querySelector("#history")
+history.addEventListener("click", () => {
+    window.location.href = "history.html"
+
+})
+
+
+let order = document.querySelector("#order")
+order.addEventListener("click", () => {
+    window.location.href = "order.html"
 
 })
