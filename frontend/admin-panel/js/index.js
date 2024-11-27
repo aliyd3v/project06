@@ -6,7 +6,7 @@ function logout() {
 
 
 
-    fetch('http://localhost:5050/logout',
+    fetch('http://192.168.0.118:5050/logout',
         {
             method: "GET"
         }

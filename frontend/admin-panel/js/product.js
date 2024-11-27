@@ -1,9 +1,9 @@
 
 
-// let home = document.querySelector("#home")
-// home.addEventListener("click" , () => {
-//     window.localStorage.href = "index.html"
-// })
+let home = document.querySelector("#home")
+home.addEventListener("click" , () => {
+    window.location.href = "index.html"
+})
 
 let products = document.querySelector("#products")
 products.addEventListener("click", () => {

@@ -64,67 +64,56 @@
                     <h3 class="text-center text-xl my-5 mx-auto w-40 break-normal text-white">Javohir shonazarov</h3>
                 </a>
             </div>
-            <!-- =========================================menu-Cotigoris=============================== -->
-            <div class="w-[300px] bg-[#111] py-3 px-5 rounded-xl ml-3  cursor-pointer">
-                <div class="h-9 w-full flex items-center gap-4">
-                    <i class="fa-solid fa-house text-xl text-[#ffc355] "></i>
-                    <p class="text-[#ffc335]">Home</p>
-                </div>
-            </div>
+              <!-- =========================================menu-Cotigoris=============================== -->
 
-            <!-- =000 -->
-            <div class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500  hover:-ml-3     ">
+                  <div id="home" class="w-[300px] bg-[#111] py-3 px-5 rounded-xl ml-3  cursor-pointer">
+                    <div class="h-9 w-full flex items-center gap-4">
+                        <i class="fa-solid fa-house text-xl text-[#ffc355] "></i> <a href="index.html" class="text-[#ffc335]">Home</a>
+                    </div>
+                  </div>
+              <!-- =000 -->
+              <div id="order" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500  hover:-ml-3     ">
                 <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-file  text-xl text-white"></i>
-                    <p class="text-white ">Order</p>
+                    <i class="fa-solid fa-file  text-xl text-white"></i><a href="order.html" class="text-white ">Order</a>
                 </div>
-            </div>
+              </div>
+              <!--  -->
+              <div id="history" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500    hover:-ml-3 ">
+                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                    <i class="fa-solid fa-clock text-xl text-white"></i> <a href="history.html" class="text-white">History</a>
+                </div>
+              </div>
 
-            <!--  -->
-
-
-            <div class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer  duration-500    hover:-ml-3 ">
+              <!-- ==== -->
+              <div id="products" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
                 <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-clock text-xl text-white"></i>
-                    <p class="text-white">History</p>
+                <i class="fa-solid fa-folder-open  text-white"></i> <a href="product.html" class="text-white">Pruducts</a>
                 </div>
-            </div>
-
-            <!-- ==== -->
-            <div id="products"
-                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+              </div>
+                <!-- ==== -->
+                  <!-- ==== -->
+              <div id="cotigories" class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
                 <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-folder-open  text-white"></i>
-                    <p class="text-white">Pruducts</p>
+                    <i class="fa-solid fa-layer-group text-xl text-white"></i> 
+                     <a href="cotigories.html" class="text-white">Categories</a>
                 </div>
-            </div>
-            <!-- ==== -->
-            <!-- ==== -->
-            <div id="cotigories"
-                class="w-[300px] boss bg-[#111] py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-layer-group text-xl text-white"></i>
-                    <p class="text-white">Categories</p>
-                </div>
-            </div>
-            <!-- ==== -->
-            <button id="logout"
-                class="w-[300px] boss bg-red-600 py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
-                <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
-                    <i class="fa-solid fa-right-from-bracket text-white"></i>
-                    <p class="text-white">Log out</p>
-                </div>
-            </button>
+              </div>
+                <!-- ==== -->
+                <button id="logout" class="w-[300px] boss bg-red-600 py-3 px-5 rounded-xl cursor-pointer duration-500   hover:-ml-3 ">
+                    <div class="h-9 w-full flex items-center gap-4 hover:text-[#ffc335]">
+                        <i class="fa-solid fa-right-from-bracket text-white"></i><p class="text-white">Log out</p>
+                    </div>
+                  </button>
         </div>
         <!-- ===============================Cotigories=====================  -->
 
 
         <div class=" w-full ">
             <div class="bg-main-bg p-5 items-center flex justify-between w-full h-20 rounded-xl mb-5">
-                <p class="text-white font-bold  text-2xl">Cotigories: </p>
+                <p class="text-white font-bold  text-2xl">Cotigories: <span id="cotygory-length"></span></p>
                 <div class="">
                     <div id="add-btn" class="button bg-green-600">
-                        <div class="button-wrapper">
+                        <div class="button-wrapper catygoryAddBtn">
                             <div class="text">Add</div>
                             <span class="icon"><i class="fa-solid fa-plus"></i></span>
                         </div>
@@ -132,12 +121,55 @@
                 </div>
             </div>
 
-            <div id="pruduct-container" class="flex  flex-col bg-main-bg w-[100%] py-6 px-5 rounded-xl gap-5 list-none   overflow-x-scroll cotigories-container">
+            <div id="pruduct-container"
+                class="flex  flex-col bg-main-bg w-[100%] py-6 px-5 rounded-xl gap-5 list-none   overflow-x-scroll cotigories-container">
 
 
 
                 <!-- salad box -->
-               
+                <div class="   w-full
+                 gap-7
+                 h-40
+                 rounded-xl
+                 flex
+                 items-center
+                 justify-between
+                 p-4
+                col-span-2
+                 bg-black">
+
+                          
+                 <div class="flex items-center">
+                    <div class="w-32 h-32 rounded-full overflow-hidden">
+                        <img class="w-full" src="" alt="Mahsulot rasm">
+                    </div>
+
+
+                    <div class="w-[300px]">
+                        <h1 class="text-white text-3xl ">${item.name} ${item._id}</h1>
+                        <p class="text-[#999] text-xl">Maxsulotlar: ${item.meals.length}</p>
+                    </div>
+
+
+                </div>
+
+                <div class="flex gap-3 ">
+                    <div class="button bg-green-600 edit-cotigory">
+                        <div class="button-wrapper">
+                            <div class="text">Edit</div>
+                            <span class="icon"><i class="fa-solid fa-pen"></i></span>
+                        </div>
+                    </div>
+                    <div class="button bg-red-600 del-cotigory">
+                        <div class="button-wrapper ">
+                            <div class="text">Del</div>
+                            <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                        </div>
+                    </div>
+                </div>
+    ;
+
+                </div>
                 <!-- Salad end -->
 
             </div>
@@ -145,15 +177,15 @@
     </main>
 
     <!-- EDIT -->
-    <div id="cotigory-edit" class="w-screen hidden z-50 h-screen backdrop-blur fixed top-0  place-items-center">
+    <div id="" class="cotigory-edit w-screen hidden z-50 h-screen backdrop-blur fixed top-0  place-items-center">
         <div class="bg-main-bg w-[400px] p-4  rounded-xl">
             <form action="" class="formField">
 
                 <label class="my-4 block" for="">
-                    <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4> <input
-                        type="text">
+                    <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4>
+                    <input type="text">
                 </label>
-               
+
                 <label>
                     <input type="file" id="imageUpload" accept="image/*" />
                     <div class="w-32 h-32 rounded-full border overflow-hidden mt-3 ">
@@ -173,17 +205,80 @@
                         </div>
                     </div>
 
-                    <div id="closeEdit" class="button border border-[#333] text-[#333] !duration-500  hover:border-white hover:text-white">
-                   
-                            <div class=" block mt-1  font-bold">close</div>
-                         
-                   
+                    <div id="closeEdit"
+                        class="button border border-[#333] text-[#333] !duration-500  hover:border-white hover:text-white">
+
+                        <div class=" block mt-1  font-bold">close</div>
+
+
                     </div>
-                    
+
                 </div>
             </form>
         </div>
 
+    </div>
+    <!-- ADD -->
+    <div id="cotigory-add" class="w-screen hidden z-50 h-screen backdrop-blur fixed top-0  place-items-center">
+        <div class="bg-main-bg w-[400px] p-4  rounded-xl">
+            <form id="formData" class="formField" >
+
+                <label class="my-4 block" for="">
+                    <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4>
+                    <input type="text">
+                </label>
+
+                <label>
+                    <input type="file" id="imageUpload" name="image" accept="image/*" />
+                    <div class="w-32 h-32 rounded-full border overflow-hidden mt-3 ">
+                        <img id="previewImage" class=" w-full object-cover hidden"
+                            src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp" alt="salad">
+                    </div>
+
+
+                </label>
+
+
+                <div class="flex gap-3 mt-4">
+                    <div class="button bg-green-600" id="confirmAdd">
+                        <div class="button-wrapper ">
+                            <div class="text">Add</div>
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        </div>
+                    </div>
+
+                    <div id="closeAdd"
+                        class="button border border-[#333] text-[#333] !duration-500  hover:border-white hover:text-white">
+
+                        <div class=" block mt-1  font-bold">close</div>
+
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- DEL -->
+    <div id="cotigory-del" class="place-items-center hidden  fixed top-0  backdrop-blur w-[100vw] z-30 h-[100vh] ">
+        <div class="w-[400px] h-[230px] select-none z-[100]  rounded-xl p-3  top-0 left-0  bg-main-bg">
+            <button class="w-full text-end outline-none"><i id="close-del-popup"
+                    class="fa-solid fa-x text-p-color"></i></button>
+
+            <div class="rounded-full border-4 mx-auto my-2 border-red-600 grid place-items-center  h-16 w-16"><i
+                    class="fa-solid fa-exclamation text-4xl text-red-600"></i></div>
+            <p class="text-center text-p-color">Are you sure you want to delete this user?</p>
+            <div class="text-center my-5">
+                <button id="del-pruduct"
+                    class="py-2 px-4 mx-2 inline-block bg-red-600  rounded-lg text-white font-bold">Yes, I'm
+                    sure</button>
+                <button id="del-canceling" class="py-2 px-4 mx-2 inline-block border rounded-lg text-p-color">No,
+                    cencel</button>
+
+            </div>
+        </div>
     </div>
 
 
