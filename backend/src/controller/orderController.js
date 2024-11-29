@@ -2,6 +2,8 @@ const { transporter } = require("../helper/sendToMail")
 const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
 const { matchedData, validationResult, Result } = require('express-validator')
+const jwt = require('jsonwebtoken')
+const { jwtSecretKey } = require('../config/config')
 
 exports.createOder = async (req, res) => {
     try {
@@ -24,24 +26,47 @@ exports.createOder = async (req, res) => {
             meals: data.meals
         })
 
+        // Generate URL with token for verifying email.
+        function tokenGenerate(id) {
+            return jwt.sign(id, jwtSecretKey)
+        }
+        const token = tokenGenerate(newOrder._id)
+        const verifyUrl = `http://192.168.0.118:5050/verify/${token}`
+
         // Sending verify message to customer email.
-        // async function sendVerifyMessage(from, to) {
-        //     return await transporter.sendMail({
-        //         from,
-        //         to,
-        //         subject: `Message title`,
-        //         text: `Plaintext version of the message`,
-        //         html: `<p>HTML version of the message</p>`,
-        //     })
-        // }
-        // const sending = await sendVerifyMessage('userg1570@gmail.com', 'nabiy5511@gmail.com')
-        // console.log(sending)
+
+        const mailOptions = {
+            from: 'sizningemail@gmail.com', // Kimdan
+            to: 'qabulqiluvchi@example.com', // Kimga
+            subject: 'Salom dunyo!', // Mavzu
+            text: 'Bu Nodemailer orqali yuborilgan email!' // Email matni
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Xatolik:', error);
+            } else {
+                console.log('Email jo‘natildi:', info.response);
+            }
+        });
+
+        async function sendVerifyMessage(from, to) {
+            return await transporter.sendMail({
+                from,
+                to,
+                subject: `Verifying`,
+                text: `For verifying click to button "Verify".`,
+                html: `<a href="${verifyUrl}">Verify</a>`,
+            })
+        }
+        const sending = await sendVerifyMessage('userg1570@gmail.com', 'userg1570@gmail.com')
+        console.log(sending)
 
         return res.status(200).send({
             success: true,
             error: false,
             data: {
-                message: "Verify url has been sended successfull."
+                message: "Verify URL has been sended to your email."
             }
         })
     } catch (error) {

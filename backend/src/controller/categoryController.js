@@ -3,12 +3,18 @@ const { Category } = require("../model/categoryModel")
 const { errorHandling } = require("./errorController")
 const fs = require('fs')
 const { supabase } = require("../storage/supabase")
+const { idChecking } = require("./idController")
 
 exports.createCategory = async (req, res) => {
-    const filePath = req.file.path
-    const fileName = req.file.filename
     console.log(req.body)
     try {
+        // File checking to exists.
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image is not uploaded!' });
+        }
+        const filePath = req.file.path
+        const fileName = req.file.filename
+
         // Result validation.
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -53,8 +59,7 @@ exports.createCategory = async (req, res) => {
             success: true,
             error: false,
             data: {
-                message: "Categrory has been created successful.",
-                categroy: { name: `${categoryData.name}` }
+                message: "Categrory has been created successful."
             }
         })
     } catch (error) {
@@ -181,13 +186,7 @@ exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: "Url or Id is wrong!" }
-            })
-        }
+        idChecking(id, res)
 
         // Checking category to exists.
         const category = await Category.findById(id)

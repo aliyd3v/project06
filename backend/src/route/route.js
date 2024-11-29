@@ -13,6 +13,8 @@ const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateV
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
 const { createOder } = require('../controller/orderController')
+const { getAllHistory } = require('../controller/historyController')
+const { verifyUrl } = require('../controller/verifyController')
 
 const router = require('express').Router()
 
@@ -41,5 +43,11 @@ router
 
     // Order route.
     .post('/order/create', checkSchema(orderCreateValidationSchema), createOder)
+
+    // Verify checking URL.
+    .post('/verify/:id', verifyUrl)
+
+    // History route.
+    .get('/history', getAllHistory)
 
 module.exports = router

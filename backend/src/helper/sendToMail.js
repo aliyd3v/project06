@@ -6,7 +6,10 @@ exports.transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,
-        user: MyTestEmail,
-        pass: MyTestEmailPassword
+        service: 'gmail',
+        auth: {
+            user: MyTestEmail,
+            pass: MyTestEmailPassword
+        }
     }
 })
