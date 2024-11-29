@@ -1,12 +1,14 @@
 const { Schema, model } = require("mongoose");
 
 const mealSchema = new Schema({
-    name: String,
+    en_name: String,
+    ru_name: String,
     category: {
         type: Schema.Types.ObjectId,
         ref: 'Category'
     },
-    description: String,
+    en_description: String,
+    ru_description: String,
     price: Number
 })
 

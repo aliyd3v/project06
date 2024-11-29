@@ -1,8 +1,13 @@
 const { validationResult, matchedData } = require("express-validator")
 const { Category } = require("../model/categoryModel")
 const { errorHandling } = require("./errorController")
+const fs = require('fs')
+const { supabase } = require("../storage/supabase")
 
 exports.createCategory = async (req, res) => {
+    const filePath = req.file.path
+    const fileName = req.file.filename
+    console.log(req.body)
     try {
         // Result validation.
         const errors = validationResult(req)
@@ -14,26 +19,42 @@ exports.createCategory = async (req, res) => {
                 error: { message: errorMessage }
             })
         }
-        const data = matchedData(req)
+        const categoryData = matchedData(req)
 
-        const condidat = await Category.findOne({ name: data.name })
+        const condidat = await Category.findOne({
+            $or: [
+                { en_name: categoryData.en_name },
+                { ru_name: categoryData.ru_name }
+            ]
+        })
         if (condidat) {
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: `Already exists category with name ${data.name}` }
+                error: { message: `Already exists category with name (en or ru).` }
             })
         }
 
+        // Uploading and get public image url.
+        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${fileName}`, fs.createReadStream(filePath), {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: req.file.mimetype
+        })
+        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`storage_images/${fileName}`)
+        fs.unlinkSync(filePath)
+
         const newCategory = await Category.create({
-            name: data.name
+            en_name: categoryData.en_name,
+            ru_name: categoryData.ru_name,
+            image: publicUrl
         })
         return res.status(201).send({
             success: true,
             error: false,
             data: {
                 message: "Categrory has been created successful.",
-                categroy: { name: `${data.name}` }
+                categroy: { name: `${categoryData.name}` }
             }
         })
     } catch (error) {
@@ -155,6 +176,7 @@ exports.updateOneCategory = async (req, res) => {
         errorHandling(error, res)
     }
 }
+
 exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
