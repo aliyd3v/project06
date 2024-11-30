@@ -7,7 +7,6 @@ const { idChecking } = require("./idController")
 
 exports.createCategory = async (req, res) => {
     try {
-
         // Result validation.
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
