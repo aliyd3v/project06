@@ -3,11 +3,9 @@ const { Category } = require("../model/categoryModel")
 const { errorHandling } = require("./errorController")
 const fs = require('fs')
 const { supabase } = require("../storage/supabase")
+const { idChecking } = require("./idController")
 
 exports.createCategory = async (req, res) => {
-    const filePath = req.file.path
-    const fileName = req.file.filename
-    console.log(req.body)
     try {
         // Result validation.
         const errors = validationResult(req)
@@ -36,13 +34,15 @@ exports.createCategory = async (req, res) => {
         }
 
         // Uploading and get public image url.
-        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${fileName}`, fs.createReadStream(filePath), {
+        const { path } = req.file
+        const { filename } = req.file
+        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${filename}`, fs.createReadStream(path), {
             cacheControl: '3600',
             upsert: false,
             contentType: req.file.mimetype
         })
-        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`storage_images/${fileName}`)
-        fs.unlinkSync(filePath)
+        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`category_images/${filename}`)
+        fs.unlinkSync(path)
 
         const newCategory = await Category.create({
             en_name: categoryData.en_name,
@@ -53,8 +53,7 @@ exports.createCategory = async (req, res) => {
             success: true,
             error: false,
             data: {
-                message: "Categrory has been created successful.",
-                categroy: { name: `${categoryData.name}` }
+                message: "Categrory has been created successful."
             }
         })
     } catch (error) {
@@ -181,13 +180,7 @@ exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: "Url or Id is wrong!" }
-            })
-        }
+        idChecking(id, res)
 
         // Checking category to exists.
         const category = await Category.findById(id)
