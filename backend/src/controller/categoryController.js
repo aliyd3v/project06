@@ -6,14 +6,7 @@ const { supabase } = require("../storage/supabase")
 const { idChecking } = require("./idController")
 
 exports.createCategory = async (req, res) => {
-    console.log(req.body)
     try {
-        // File checking to exists.
-        if (!req.file) {
-            return res.status(400).json({ message: 'Image is not uploaded!' });
-        }
-        const filePath = req.file.path
-        const fileName = req.file.filename
 
         // Result validation.
         const errors = validationResult(req)
@@ -42,13 +35,15 @@ exports.createCategory = async (req, res) => {
         }
 
         // Uploading and get public image url.
-        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${fileName}`, fs.createReadStream(filePath), {
+        const { path } = req.file
+        const { filename } = req.file
+        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${filename}`, fs.createReadStream(path), {
             cacheControl: '3600',
             upsert: false,
             contentType: req.file.mimetype
         })
-        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`storage_images/${fileName}`)
-        fs.unlinkSync(filePath)
+        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`category_images/${filename}`)
+        fs.unlinkSync(path)
 
         const newCategory = await Category.create({
             en_name: categoryData.en_name,
