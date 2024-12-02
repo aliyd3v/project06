@@ -10,6 +10,11 @@ const { createAdminValidationSchema } = require('../validationSchemas/adminCreat
 const { loginValidationSchema } = require('../validationSchemas/loginValidationSchema')
 const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateValidationSchema')
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
+const { upload } = require('../helper/upload')
+const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
+const { createOder } = require('../controller/orderController')
+const { getAllHistory } = require('../controller/historyController')
+const { verifyUrl } = require('../controller/verifyController')
 
 const router = require('express').Router()
 
@@ -23,7 +28,7 @@ router
     .get('/admins', getAllAdmins)
 
     // Category route.
-    .post('/category/create', checkSchema(categoryCreateValidationSchema), createCategory)
+    .post('/category/create', checkSchema(categoryCreateValidationSchema), upload.single('file'), createCategory)
     .get('/category', getAllCategories)
     .get('/category/:id', getOneCategory)
     .post('/category/:id/update', checkSchema(categoryUpdateValidationSchema), updateOneCategory)
@@ -35,5 +40,14 @@ router
     .post('/meal/:id', getOneMeal)
     .post('/meal/:id/update', checkSchema(mealUpdateValidationSchema), updateOneMeal)
     .post('/meal/:id/delete', deleteOneMeal)
+
+    // Order route.
+    .post('/order/create', checkSchema(orderCreateValidationSchema), createOder)
+
+    // Verify checking URL.
+    .post('/verify/:id', verifyUrl)
+
+    // History route.
+    .get('/history', getAllHistory)
 
 module.exports = router
