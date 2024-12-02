@@ -127,26 +127,26 @@
 
 
                 <!-- salad box -->
-                <div class="   w-full
-                 gap-7
+                <div class="w-full
+                
                  h-40
                  rounded-xl
                  flex
                  items-center
                  justify-between
-                 p-4
-                col-span-2
+                p-4
+              
                  bg-black">
 
                           
                  <div class="flex items-center">
                     <div class="w-32 h-32 rounded-full overflow-hidden">
-                        <img class="w-full" src="" alt="Mahsulot rasm">
+                        <img class="w-full h-full" src="" alt="Mahsulot rasm">
                     </div>
 
 
                     <div class="w-[300px]">
-                        <h1 class="text-white text-3xl ">${item.name} ${item._id}</h1>
+                        <h1 class="text-white text-3xl ">${item.name}</h1>
                         <p class="text-[#999] text-xl">Maxsulotlar: ${item.meals.length}</p>
                     </div>
 
@@ -167,7 +167,6 @@
                         </div>
                     </div>
                 </div>
-    ;
 
                 </div>
                 <!-- Salad end -->
@@ -182,11 +181,20 @@
             <form action="" class="formField">
 
                 <label class="my-4 block" for="">
+                    <h1 class="text-white">Edit</h1>
                     <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4>
-                    <input type="text">
+                    <div class="flex mt-2 items-center">
+                        <img src="../img/flags'/uzbekistan_square_icon_64.png" class="h-7" alt="">
+                        <input type="text">
+                    </div>
+                    <div class="flex mt-5 items-center">
+
+                        <img src="../img/flags'/russia_square_icon_64.png" class="h-7" alt="">
+                        <input type="text">
+                    </div>
                 </label>
 
-                <label>
+                <!-- <label>
                     <input type="file" id="imageUpload" accept="image/*" />
                     <div class="w-32 h-32 rounded-full border overflow-hidden mt-3 ">
                         <img id="previewImage" class=" w-full object-cover hidden"
@@ -194,7 +202,7 @@
                     </div>
 
 
-                </label>
+                </label> -->
 
 
                 <div class="flex gap-3 mt-4">
@@ -221,22 +229,30 @@
     <!-- ADD -->
     <div id="cotigory-add" class="w-screen hidden z-50 h-screen backdrop-blur fixed top-0  place-items-center">
         <div class="bg-main-bg w-[400px] p-4  rounded-xl">
-            <form id="formData" class="formField" >
+            <form id="formData"  class="formField" enctype="multipart/form-data" >
 
                 <label class="my-4 block" for="">
                     <h4 class="text-white text-xl"><span class="text-text-color  text-xl">*</span>Cotigory Name</h4>
-                    <input type="text">
-                </label>
+                    <div class="flex mt-2 items-center">
+                        <img src="../img/flags'/uzbekistan_square_icon_64.png" class="h-7" alt="">
+                        <input name="en_name" type="text">
+                    </div>
+                    <div class="flex mt-5 items-center">
 
-                <label>
+                        <img src="../img/flags'/russia_square_icon_64.png" class="h-7" alt="">
+                        <input name="ru_name" type="text">
+                    </div>
+                </label>
+                <input type="file" name="file">
+                <!-- <label>
                     <input type="file" id="imageUpload" name="image" accept="image/*" />
                     <div class="w-32 h-32 rounded-full border overflow-hidden mt-3 ">
-                        <img id="previewImage" class=" w-full object-cover hidden"
-                            src="../img/healthy-salad-plate-tomatoes-chickpeas-600nw-2427459441.webp" alt="salad">
+                        <img name="file" id="previewImage" class=" w-full object-cover hidden"
+                            src="" alt="">
                     </div>
 
 
-                </label>
+                </label> -->
 
 
                 <div class="flex gap-3 mt-4">
@@ -284,6 +300,8 @@
 
 
     <script src="../js/catigories.js"></script>
+
+
 </body>
 
 </html>
