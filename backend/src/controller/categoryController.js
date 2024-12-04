@@ -2,8 +2,8 @@ const { validationResult, matchedData } = require("express-validator")
 const { Category } = require("../model/categoryModel")
 const { errorHandling } = require("./errorController")
 const fs = require('fs')
-const { supabase } = require("../storage/supabase")
 const { idChecking } = require("./idController")
+const { uploadImage, getImageUrl } = require("./uploadImageConroller")
 
 exports.createCategory = async (req, res) => {
     try {
@@ -19,6 +19,11 @@ exports.createCategory = async (req, res) => {
         }
         const categoryData = matchedData(req)
 
+        // Registration path and name of file.
+        const filePath = req.file.path
+        const fileName = req.file.filename
+
+        // Checking name for exists. (If exists responsing error.)
         const condidat = await Category.findOne({
             $or: [
                 { en_name: categoryData.en_name },
@@ -26,6 +31,7 @@ exports.createCategory = async (req, res) => {
             ]
         })
         if (condidat) {
+            fs.unlinkSync(filePath)
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -33,30 +39,31 @@ exports.createCategory = async (req, res) => {
             })
         }
 
-        // Uploading and get public image url.
-        const { path } = req.file
-        const { filename } = req.file
-        const { data, error } = await supabase.storage.from('storage').upload(`category_images/${filename}`, fs.createReadStream(path), {
-            cacheControl: '3600',
-            upsert: false,
-            contentType: req.file.mimetype
-        })
-        const { publicUrl } = supabase.storage.from('storage').getPublicUrl(`category_images/${filename}`)
-        fs.unlinkSync(path)
+        // Uploading image to supabse storage and get image url.
+        await uploadImage(fileName, filePath)
+        const { publicUrl } = await getImageUrl(fileName, filePath)
+        fs.unlinkSync(filePath)
 
+        // Writing new category to database.
         const newCategory = await Category.create({
             en_name: categoryData.en_name,
             ru_name: categoryData.ru_name,
-            image: publicUrl
+            image_url: publicUrl,
+            image_name: fileName
         })
+
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Categrory has been created successful."
+                message: "Category has been created successfully."
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
@@ -200,6 +207,23 @@ exports.deleteOneCategory = async (req, res) => {
             error: false,
             data: {
                 message: "Category has been deleted successful."
+            }
+        })
+    } catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.deleteAllCategories = async (req, res) => {
+    try {
+        // Deleting category from database.
+        await Category.deleteMany()
+
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Categories has been deleted successfully."
             }
         })
     } catch (error) {

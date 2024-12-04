@@ -6,6 +6,7 @@ const { cookieParserKey } = require('./src/config/config')
 const { connectMongodb } = require('./src/db/mongodb')
 const cors = require('cors')
 const helmet = require('helmet')
+const bodyParser = require('body-parser')
 
 app.use((req, res, next) => {
     res.setHeader('Referrer-Policy', 'strict-origin');
@@ -17,6 +18,7 @@ app.use(cors({
 }))
 app.use(helmet());
 app.use(express.json())
+app.use(bodyParser.json())
 app.use(express.urlencoded({
     extended: false
 }))

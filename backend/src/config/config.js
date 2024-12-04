@@ -11,7 +11,8 @@ exports.mongodbUrl = process.env.MONGODB_URL
 
 // Supabase config.
 exports.supabaseUrl = process.env.SUPABASE_URL
-exports.supabaseKey = process.env.SUPABASE_KEY
+exports.supabaseKey = process.env.SUPABASE_ACCESS_KEY
+exports.supabaseBucketName = process.env.SUPABASE_BUCKET_NAME
 
 // Email for nodemailer.
 exports.MyTestEmail = process.env.MY_EMAIL
