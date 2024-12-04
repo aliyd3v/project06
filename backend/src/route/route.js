@@ -1,7 +1,7 @@
 const { checkSchema } = require('express-validator')
 const { adminCreate, getAllAdmins } = require('../controller/adminController')
 const { login, logout } = require('../controller/authController')
-const { createCategory, getAllCategories, getOneCategory, updateOneCategory, deleteOneCategory } = require('../controller/categoryController')
+const { createCategory, getAllCategories, getOneCategory, updateOneCategory, deleteOneCategory, deleteAllCategories } = require('../controller/categoryController')
 const { createMeal, getAllMeals, getOneMeal, updateOneMeal, deleteOneMeal } = require('../controller/mealController')
 const { jwtAccessMiddleware } = require('../middleware/jwtAccessMiddleware')
 const { categoryCreateValidationSchema } = require('../validationSchemas/categoryCreateValidationSchema')
@@ -28,11 +28,12 @@ router
     .get('/admins', getAllAdmins)
 
     // Category route.
-    .post('/category/create', checkSchema(categoryCreateValidationSchema), upload.single('file'), createCategory)
+    .post('/category/create', upload.single('file'), checkSchema(categoryCreateValidationSchema), createCategory)
     .get('/category', getAllCategories)
     .get('/category/:id', getOneCategory)
     .post('/category/:id/update', checkSchema(categoryUpdateValidationSchema), updateOneCategory)
     .post('/category/:id/delete', deleteOneCategory)
+    .post('/categories/delete', /*jwtAccessMiddleware,*/ deleteAllCategories)
 
     // Meal route.
     .post('/meal/create', checkSchema(mealCreateValidationSchema), createMeal)

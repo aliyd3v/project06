@@ -8,21 +8,21 @@ exports.mealCreateValidationSchema = {
         },
         escape: true
     },
-    en_description: {
-        notEmpty: {
-            errorMessage: "Description a meal cannot be empty!"
-        },
-        isString: {
-            errorMessage: "Description a meal must be a string!"
-        },
-        escape: true
-    },
     ru_name: {
         notEmpty: {
             errorMessage: "Name a meal cannot be empty!"
         },
         isString: {
             errorMessage: "Name a meal must be a string!"
+        },
+        escape: true
+    },
+    en_description: {
+        notEmpty: {
+            errorMessage: "Description a meal cannot be empty!"
+        },
+        isString: {
+            errorMessage: "Description a meal must be a string!"
         },
         escape: true
     },
