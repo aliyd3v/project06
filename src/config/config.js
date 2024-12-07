@@ -17,3 +17,9 @@ exports.supabaseBucketName = process.env.SUPABASE_BUCKET_NAME
 // Email for nodemailer.
 exports.MyTestEmail = process.env.MY_EMAIL
 exports.MyTestEmailPassword = process.env.MY_EMAIL_PASSWORD
+
+// Project status.
+exports.projectStatus = process.env.NODE_ENV
+
+// Cors origin domain.
+exports.domain = process.env.DOMAIN

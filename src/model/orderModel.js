@@ -6,7 +6,6 @@ const orderSchema = new Schema({
     status: {
         type: String,
         enum: ['Delivered', 'Pending', 'Canceled', 'Checking', ],
-        default: 'pending',
         required: [true, 'Status required!']
     },
     meals: [{

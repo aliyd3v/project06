@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken')
 const { errorHandling } = require("./errorController")
-const { jwtSecretKey } = require('../config/config')
+const { jwtSecretKey, projectStatus } = require('../config/config')
 const { Admin } = require('../model/userModel')
 const { validationResult, matchedData } = require('express-validator')
+const { validationController } = require('./validationController')
 
 function tokenGenerate(id) {
     const payload = {
@@ -13,32 +14,21 @@ function tokenGenerate(id) {
 
 exports.login = async (req, res) => {
     try {
-        // Clear cookie.
-        res.clearCookie('authcookie')
-
         // Result validation.
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            console.log(errors)
-            const errorMessage = errors.array().map(error => error.msg)
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: errorMessage }
-            })
-        }
-        const data = matchedData(req)
+        const data = validationController(req, res)
 
         // Checking user and password to valid.
         const user = await Admin.findOne({ username: data.username })
         if (!user) {
+            // Responsing.
             return res.status(403).send({
                 success: false,
                 data: null,
-                error: { message: `Admin not found with username ${data.username}.` }
+                error: { message: `Admin not found with username "${data.username}".` }
             })
         }
         if (user.password !== data.password) {
+            // Responsing.
             return res.status(403).send({
                 success: false,
                 data: null,
@@ -46,14 +36,8 @@ exports.login = async (req, res) => {
             })
         }
 
-        // Writing cookie.
+        // Generating token.
         const token = tokenGenerate(user._id)
-        res.cookie('authcookie', token, {
-            httpOnly: true,
-            signed: true,
-            secure: false,
-            sameSite: 'lax'
-        })
 
         // Responsing.
         return res.status(201).send({
@@ -64,25 +48,10 @@ exports.login = async (req, res) => {
                 token
             }
         })
-    } catch (error) {
-        // Error handling.
-        errorHandling(error, res)
     }
-}
 
-exports.logout = async (req, res) => {
-    try {
-        // Clear cookie.
-        res.clearCookie('authcookie')
-
-        // Responsning.
-        return res.status(201).send({
-            success: true,
-            error: false,
-            data: { message: "Logout has been successful!" }
-        })
-    } catch (error) {
-        // Error handling.
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
