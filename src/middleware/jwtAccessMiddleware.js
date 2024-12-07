@@ -2,59 +2,52 @@ const { jwtSecretKey } = require("../config/config")
 const { errorHandling } = require("../controller/errorController")
 const jwt = require("jsonwebtoken")
 const { Admin } = require("../model/userModel")
+const { idChecking } = require("../controller/idController")
+
+const resForbidden = (res) => {
+    return res.status(403).send({
+        success: false,
+        data: null,
+        error: { message: "Access denied. Token is valid!" }
+    })
+}
 
 exports.jwtAccessMiddleware = async function (req, res, next) {
     try {
-        if (!req.cookies) {
-            return res.status(403).send({
-                success: false,
-                data: null,
-                error: { message: "Access denied. Token is valid!" }
-            })
+        // Checking header authorization.
+        const authHeader = req.headers.authorization
+        if (!authHeader) {
+            // Responsing.
+            return resForbidden(res)
         }
-        const token = req.cookies.authcookie
+
+        //Checking token for valid.
+        const token = authHeader.split(' ')[1]
         if (!token) {
-            return res.status(403).send({
-                success: false,
-                data: null,
-                error: { message: "Access denied. Token is valid!" }
-            })
+            // Responsing.
+            return resForbidden(res)
         }
         const { id } = jwt.verify(token, jwtSecretKey, function (error, decoded) {
             if (error) {
-                return res.status(403).send({
-                    success: false,
-                    data: null,
-                    error: { message: "Access denied. Token is valid!" }
-                })
+                // Responsing.
+                return resForbidden(res)
             }
             return decoded
         })
+
         // Checking id to valid.
-        if (!id) {
-            return res.status(403).send({
-                success: false,
-                data: null,
-                error: { message: "Access denied. Token is valid!" }
-            })
-        }
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(403).send({
-                success: false,
-                data: null,
-                error: { message: "Access denied. Token is valid!" }
-            })
-        }
+        idChecking(id, res)
         const admin = await Admin.findById(id)
         if (!admin) {
-            return res.status(403).send({
-                success: false,
-                data: null,
-                error: { message: "Access denied. Token is valid!" }
-            })
+            // Responsing.
+            return resForbidden(res)
         }
+
         next()
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }

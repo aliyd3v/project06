@@ -1,23 +1,14 @@
-const { validationResult, matchedData } = require("express-validator")
 const { Category } = require("../model/categoryModel")
 const { errorHandling } = require("./errorController")
 const fs = require('fs')
 const { idChecking } = require("./idController")
-const { uploadImage, getImageUrl } = require("./uploadImageConroller")
+const { uploadImage, getImageUrl, deleteImage } = require("./imageConroller")
+const { validationController } = require("./validationController")
 
 exports.createCategory = async (req, res) => {
     try {
         // Result validation.
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            const errorMessage = errors.array().map(error => error.msg)
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: errorMessage }
-            })
-        }
-        const categoryData = matchedData(req)
+        const data = validationController(req, res)
 
         // Registration path and name of file.
         const filePath = req.file.path
@@ -26,12 +17,13 @@ exports.createCategory = async (req, res) => {
         // Checking name for exists. (If exists responsing error.)
         const condidat = await Category.findOne({
             $or: [
-                { en_name: categoryData.en_name },
-                { ru_name: categoryData.ru_name }
+                { en_name: data.en_name },
+                { ru_name: data.ru_name }
             ]
         })
         if (condidat) {
             fs.unlinkSync(filePath)
+            // Responsing.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -46,8 +38,8 @@ exports.createCategory = async (req, res) => {
 
         // Writing new category to database.
         const newCategory = await Category.create({
-            en_name: categoryData.en_name,
-            ru_name: categoryData.ru_name,
+            en_name: data.en_name,
+            ru_name: data.ru_name,
             image_url: publicUrl,
             image_name: fileName
         })
@@ -70,16 +62,22 @@ exports.createCategory = async (req, res) => {
 
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find().populate('meals', 'name')
+        // Getting all categories from database.
+        const categories = await Category.find().populate('meals')
+
+        // Responsing.
         return res.status(200).send({
             success: true,
             error: false,
             data: {
-                message: "Getting all categories successful.",
+                message: "Getting all categories successfully.",
                 categories
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
@@ -88,22 +86,22 @@ exports.getOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: "Url or Id is wrong!" }
-            })
-        }
+        idChecking(id, res)
 
-        const category = await Category.findById(id).populate('meals', 'name')
+        // Searching category with id.
+        const category = await Category.findById(id).populate('meals')
+
+        // Checking to exists.
         if (!category) {
+            // Responsing.
             return res.status(404).send({
                 success: false,
                 data: null,
                 error: { message: "Category is not found!" }
             })
         }
+
+        // Responsing.
         return res.status(200).send({
             success: true,
             error: false,
@@ -112,7 +110,10 @@ exports.getOneCategory = async (req, res) => {
                 category
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
@@ -121,16 +122,10 @@ exports.updateOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: "Url or Id is wrong!" }
-            })
-        }
+        idChecking(id, res)
 
         // Checking category to exists.
-        const category = await Category.findById(id).populate('meals', 'name')
+        const category = await Category.findById(id).populate('meals')
         if (!category) {
             return res.status(404).send({
                 success: false,
@@ -140,45 +135,59 @@ exports.updateOneCategory = async (req, res) => {
         }
 
         // Result validation.
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            const errorMessage = errors.array().map(error => error.msg)
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: errorMessage }
+        const { data } = validationController(req, res)
+
+        if (!req.file) {
+            if (category.en_name == data.en_name && category.ru_name == data.ru_name) {
+                // Responsing.
+                return res.status(201).send({
+                    success: true,
+                    error: false,
+                    data: { message: "Category has been updated successfully." }
+                })
+            } else {
+                // Writing to database.
+                const updateCategory = await Category.findByIdAndUpdate(id, {
+                    ...category,
+                    en_name: data.en_name,
+                    ru_name: data.ru_name
+                })
+            }
+        } else {
+            // Registration path and name of file.
+            const filePath = req.file.path
+            const fileName = req.file.filename
+
+            // Delete old image of category.
+            await deleteImage(category.image_name)
+
+            // Uploading image to supabse storage and get image url.
+            await uploadImage(fileName, filePath)
+            const { publicUrl } = await getImageUrl(fileName, filePath)
+            fs.unlinkSync(filePath)
+
+            // Writing to database.
+            const updateCategory = await Category.findByIdAndUpdate(id, {
+                ...category,
+                en_name: data.en_name,
+                ru_name: data.ru_name,
+                image_url: publicUrl,
+                image_name: fileName
             })
         }
-        const data = matchedData(req)
-
-        // Checking for changes.
-        if (category.name == data.name) {
-            // Responsning.
-            return res.status(200).send({
-                success: true,
-                error: false,
-                data: {
-                    message: "Category has been getted successful."
-                }
-            })
-        }
-
-        // Writing updates to database.
-        const updateCategory = await Category.findByIdAndUpdate(id, {
-            ...category,
-            name: data.name
-        })
 
         // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Category has been updated successful."
+                message: "Category has been updated successfully."
             }
         })
-    } catch (error) {
-        // Error handling.
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
@@ -192,6 +201,7 @@ exports.deleteOneCategory = async (req, res) => {
         // Checking category to exists.
         const category = await Category.findById(id)
         if (!category) {
+            // Responsing.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -199,26 +209,42 @@ exports.deleteOneCategory = async (req, res) => {
             })
         }
 
+        // Deleting old image of category.
+        await deleteImage(category.image_name)
+
         // Deleting category from database.
         await Category.findByIdAndDelete(id)
 
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: "Category has been deleted successful."
+                message: "Category has been deleted successfully."
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
 
 exports.deleteAllCategories = async (req, res) => {
     try {
+        // Checking categories for exists
+        const categories = await Category.find()
+
+        // Deleting images of categories.
+        for (let index = 0; index < categories.length; index++) {
+            await deleteImage(categories[i].image_name)
+        }
+
         // Deleting category from database.
         await Category.deleteMany()
 
+        // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
@@ -226,7 +252,10 @@ exports.deleteAllCategories = async (req, res) => {
                 message: "Categories has been deleted successfully."
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }

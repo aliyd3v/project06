@@ -27,10 +27,7 @@ exports.getImageUrl = async (fileName, filePath) => {
 };
 
 exports.deleteImage = async (fileName) => {
-    const { error } = supabase.storage
+    await supabase.storage
         .from(supabaseBucketName)
-        .remove(supabaseBucketName + fileName);
-    if (error) {
-        throw error
-    }
+        .remove(fileName);
 };

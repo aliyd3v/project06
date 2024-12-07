@@ -12,7 +12,7 @@ const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateV
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
-const { createOder } = require('../controller/orderController')
+const { createOder, getAllActualOrders } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 const { verifyUrl } = require('../controller/verifyController')
 
@@ -21,34 +21,34 @@ const router = require('express').Router()
 router
     // Auth route.
     .post('/login', checkSchema(loginValidationSchema), login)
-    .get('/logout', logout)
 
     // Admin route.
-    .post('/admin-create', checkSchema(createAdminValidationSchema), adminCreate)
-    .get('/admins', getAllAdmins)
+    .post('/admin-create', jwtAccessMiddleware, checkSchema(createAdminValidationSchema), adminCreate)
+    .get('/admins', jwtAccessMiddleware, getAllAdmins)
 
     // Category route.
-    .post('/category/create', upload.single('file'), checkSchema(categoryCreateValidationSchema), createCategory)
-    .get('/category', getAllCategories)
-    .get('/category/:id', getOneCategory)
-    .post('/category/:id/update', checkSchema(categoryUpdateValidationSchema), updateOneCategory)
-    .post('/category/:id/delete', deleteOneCategory)
-    .post('/categories/delete', /*jwtAccessMiddleware,*/ deleteAllCategories)
+    .post('/category/create', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryCreateValidationSchema), createCategory)
+    .get('/category', jwtAccessMiddleware, getAllCategories)
+    .get('/category/:id', jwtAccessMiddleware, getOneCategory)
+    .post('/category/:id/update', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryUpdateValidationSchema), updateOneCategory)
+    .post('/category/:id/delete', jwtAccessMiddleware, deleteOneCategory)
+    .post('/categories/delete', jwtAccessMiddleware, deleteAllCategories)
 
     // Meal route.
-    .post('/meal/create', checkSchema(mealCreateValidationSchema), createMeal)
-    .post('/meal', getAllMeals)
-    .post('/meal/:id', getOneMeal)
-    .post('/meal/:id/update', checkSchema(mealUpdateValidationSchema), updateOneMeal)
-    .post('/meal/:id/delete', deleteOneMeal)
+    .post('/meal/create', jwtAccessMiddleware, checkSchema(mealCreateValidationSchema), createMeal)
+    .post('/meal', jwtAccessMiddleware, getAllMeals)
+    .post('/meal/:id', jwtAccessMiddleware, getOneMeal)
+    .post('/meal/:id/update', jwtAccessMiddleware, checkSchema(mealUpdateValidationSchema), updateOneMeal)
+    .post('/meal/:id/delete', jwtAccessMiddleware, deleteOneMeal)
 
     // Order route.
     .post('/order/create', checkSchema(orderCreateValidationSchema), createOder)
+    .get('/order', getAllActualOrders)
 
     // Verify checking URL.
     .post('/verify/:id', verifyUrl)
 
     // History route.
-    .get('/history', getAllHistory)
+    .get('/history', jwtAccessMiddleware, getAllHistory)
 
 module.exports = router
