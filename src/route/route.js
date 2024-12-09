@@ -28,16 +28,16 @@ router
 
     // Category route.
     .post('/category/create', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryCreateValidationSchema), createCategory)
-    .get('/category', jwtAccessMiddleware, getAllCategories)
-    .get('/category/:id', jwtAccessMiddleware, getOneCategory)
+    .get('/category', getAllCategories)
+    .get('/category/:id', getOneCategory)
     .post('/category/:id/update', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryUpdateValidationSchema), updateOneCategory)
     .post('/category/:id/delete', jwtAccessMiddleware, deleteOneCategory)
     .post('/categories/delete', jwtAccessMiddleware, deleteAllCategories)
 
     // Meal route.
     .post('/meal/create', jwtAccessMiddleware, checkSchema(mealCreateValidationSchema), createMeal)
-    .post('/meal', jwtAccessMiddleware, getAllMeals)
-    .post('/meal/:id', jwtAccessMiddleware, getOneMeal)
+    .get('/meal', getAllMeals)
+    .get('/meal/:id', getOneMeal)
     .post('/meal/:id/update', jwtAccessMiddleware, checkSchema(mealUpdateValidationSchema), updateOneMeal)
     .post('/meal/:id/delete', jwtAccessMiddleware, deleteOneMeal)
 
