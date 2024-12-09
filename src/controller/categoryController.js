@@ -135,9 +135,9 @@ exports.updateOneCategory = async (req, res) => {
         }
 
         // Result validation.
-        const { data } = validationController(req, res)
+        const data = validationController(req, res)
 
-        if (!req.file) {
+        if (!req.file || data.file == undefined) {
             if (category.en_name == data.en_name && category.ru_name == data.ru_name) {
                 // Responsing.
                 return res.status(201).send({
@@ -146,20 +146,54 @@ exports.updateOneCategory = async (req, res) => {
                     data: { message: "Category has been updated successfully." }
                 })
             } else {
-                // Writing to database.
-                const updateCategory = await Category.findByIdAndUpdate(id, {
-                    ...category,
-                    en_name: data.en_name,
-                    ru_name: data.ru_name
+                // Checking name for exists. (If exists responsing error.)
+                const condidat = await Category.findOne({
+                    $or: [
+                        { en_name: data.en_name },
+                        { ru_name: data.ru_name }
+                    ]
                 })
+                if (condidat) {
+                    if (condidat._id != id) {
+                        // Responsing.
+                        return res.status(400).send({
+                            success: false,
+                            data: null,
+                            error: { message: `Already exists category with name (en or ru).` }
+                        })
+                    }
+                }
+
+                // Writing to database.
+                category.en_name = data.en_name
+                category.ru_name = data.ru_name
+                const updateCategory = await Category.findByIdAndUpdate(id, category)
             }
         } else {
+            // Checking name for exists. (If exists responsing error.)
+            const condidat = await Category.findOne({
+                $or: [
+                    { en_name: data.en_name },
+                    { ru_name: data.ru_name }
+                ]
+            })
+            if (condidat) {
+                if (condidat._id != id) {
+                    // Responsing.
+                    return res.status(400).send({
+                        success: false,
+                        data: null,
+                        error: { message: `Already exists category with name (en or ru).` }
+                    })
+                }
+            }
+
             // Registration path and name of file.
             const filePath = req.file.path
             const fileName = req.file.filename
 
             // Delete old image of category.
-            await deleteImage(category.image_name)
+            deleteImage(category.image_name)
 
             // Uploading image to supabse storage and get image url.
             await uploadImage(fileName, filePath)
@@ -167,13 +201,11 @@ exports.updateOneCategory = async (req, res) => {
             fs.unlinkSync(filePath)
 
             // Writing to database.
-            const updateCategory = await Category.findByIdAndUpdate(id, {
-                ...category,
-                en_name: data.en_name,
-                ru_name: data.ru_name,
-                image_url: publicUrl,
-                image_name: fileName
-            })
+            category.en_name = data.en_name
+            category.ru_name = data.ru_name
+            category.image_url = publicUrl
+            category.image_name = fileName
+            const updateCategory = await Category.findByIdAndUpdate(id, category)
         }
 
         // Responsing.
