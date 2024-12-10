@@ -9,7 +9,9 @@ const mealSchema = new Schema({
     },
     en_description: String,
     ru_description: String,
-    price: Number
+    price: Number,
+    image_url: String,
+    image_name: String
 })
 
 exports.Meal = model('Meal', mealSchema)

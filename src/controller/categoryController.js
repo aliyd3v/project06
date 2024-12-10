@@ -4,6 +4,7 @@ const fs = require('fs')
 const { idChecking } = require("./idController")
 const { uploadImage, getImageUrl, deleteImage } = require("./imageConroller")
 const { validationController } = require("./validationController")
+const { Meal } = require("../model/mealModel")
 
 exports.createCategory = async (req, res) => {
     try {
@@ -63,7 +64,7 @@ exports.createCategory = async (req, res) => {
 exports.getAllCategories = async (req, res) => {
     try {
         // Getting all categories from database.
-        const categories = await Category.find().populate('meals')
+        const categories = await Category.find()
 
         // Responsing.
         return res.status(200).send({
@@ -86,10 +87,10 @@ exports.getOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(id, res)
+        idChecking(req, res, id)
 
         // Searching category with id.
-        const category = await Category.findById(id).populate('meals')
+        const category = await Category.findById(id)
 
         // Checking to exists.
         if (!category) {
@@ -122,11 +123,16 @@ exports.updateOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(id, res)
+        idChecking(req, res, id)
 
         // Checking category to exists.
-        const category = await Category.findById(id).populate('meals')
+        const category = await Category.findById(id)
         if (!category) {
+            if (req.file) {
+                fs.unlinkSync(req.file.path)
+            }
+
+            // Responsing.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -137,15 +143,8 @@ exports.updateOneCategory = async (req, res) => {
         // Result validation.
         const data = validationController(req, res)
 
-        if (!req.file || data.file == undefined) {
-            if (category.en_name == data.en_name && category.ru_name == data.ru_name) {
-                // Responsing.
-                return res.status(201).send({
-                    success: true,
-                    error: false,
-                    data: { message: "Category has been updated successfully." }
-                })
-            } else {
+        if (!req.file) {
+            if (category.en_name != data.en_name || category.ru_name != data.ru_name) {
                 // Checking name for exists. (If exists responsing error.)
                 const condidat = await Category.findOne({
                     $or: [
@@ -167,9 +166,13 @@ exports.updateOneCategory = async (req, res) => {
                 // Writing to database.
                 category.en_name = data.en_name
                 category.ru_name = data.ru_name
-                const updateCategory = await Category.findByIdAndUpdate(id, category)
+                await Category.findByIdAndUpdate(id, category)
             }
         } else {
+            // Registration path and name of file.
+            const filePath = req.file.path
+            const fileName = req.file.filename
+
             // Checking name for exists. (If exists responsing error.)
             const condidat = await Category.findOne({
                 $or: [
@@ -177,20 +180,15 @@ exports.updateOneCategory = async (req, res) => {
                     { ru_name: data.ru_name }
                 ]
             })
-            if (condidat) {
-                if (condidat._id != id) {
-                    // Responsing.
-                    return res.status(400).send({
-                        success: false,
-                        data: null,
-                        error: { message: `Already exists category with name (en or ru).` }
-                    })
-                }
+            if (condidat._id != id) {
+                fs.unlinkSync(filePath)
+                // Responsing.
+                return res.status(400).send({
+                    success: false,
+                    data: null,
+                    error: { message: `Already exists category with name (en or ru).` }
+                })
             }
-
-            // Registration path and name of file.
-            const filePath = req.file.path
-            const fileName = req.file.filename
 
             // Delete old image of category.
             deleteImage(category.image_name)
@@ -228,7 +226,7 @@ exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(id, res)
+        idChecking(req, res, id)
 
         // Checking category to exists.
         const category = await Category.findById(id)
@@ -241,8 +239,16 @@ exports.deleteOneCategory = async (req, res) => {
             })
         }
 
-        // Deleting old image of category.
-        await deleteImage(category.image_name)
+        // Deleting meals in category.
+        const meals = await Meal.find({ category: id })
+        meals.forEach(meal => {
+            // Deleting images of meals.
+            deleteImage(meal.image_name)
+        })
+        await Meal.deleteMany({ category: id })
+
+        // Deleting image of category.
+        deleteImage(category.image_name)
 
         // Deleting category from database.
         await Category.findByIdAndDelete(id)
@@ -265,13 +271,13 @@ exports.deleteOneCategory = async (req, res) => {
 
 exports.deleteAllCategories = async (req, res) => {
     try {
-        // Checking categories for exists
+        // Checking categories for exists.
         const categories = await Category.find()
 
-        // Deleting images of categories.
-        for (let index = 0; index < categories.length; index++) {
-            await deleteImage(categories[i].image_name)
-        }
+        // Deleting images in categories.
+        categories.forEach(category => {
+            deleteImage(categories[i].image_name)
+        })
 
         // Deleting category from database.
         await Category.deleteMany()

@@ -1,33 +1,39 @@
 const { Admin } = require("../model/userModel")
 const { errorHandling } = require("./errorController")
+const { validationController } = require("./validationController")
 
 exports.adminCreate = async (req, res) => {
     try {
         // Result validation.
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            const errorMessage = errors.array().map(error => error.msg)
+        const data = validationController(req, res)
+
+        const condidat = await Admin.findOne({ username: data.username })
+        if (condidat) {
+            // Responsing.
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: errorMessage }
+                error: {
+                    message: `Already used this name from another admin. Please enter another username!`
+                }
             })
         }
-        const data = matchedData(req)
 
         // Writing new admin to database.
-        const admin = await Admin.create({ username: data.username, password: data.password })
+        await Admin.create({ username: data.username, password: data.password })
 
         // Responsing.
         return res.status(201).send({
             success: true,
             error: false,
             data: {
-                message: `Admin ${data.username} has been created successful.`
+                message: `Admin has been created successful.`
             }
         })
-    } catch (error) {
-        // Error handling.
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
@@ -40,9 +46,10 @@ exports.getAllAdmins = async (req, res) => {
             error: false,
             data: { admins }
         })
-    } catch (error) {
-        // Error handling.
+    } 
+    
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }
-

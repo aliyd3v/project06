@@ -3,41 +3,33 @@ const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
 const { matchedData, validationResult, Result } = require('express-validator')
 const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../config/config')
+const { jwtSecretKey, MyTestEmail } = require('../config/config')
+const { validationController } = require("./validationController")
 
 exports.createOder = async (req, res) => {
     try {
         // Result validation.
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            const errorMessage = errors.array().map(error => error.msg)
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: { message: errorMessage }
-            })
-        }
-        const data = matchedData(req)
+        // const data = validationController(req, res)
 
-        const newOrder = await Order.create({
-            email: data.email,
-            phone: data.phone,
-            status: ['Checking'],
-            meals: data.meals
-        })
+        // const newOrder = await Order.create({
+        //     customer_name: data.customer_name,
+        //     email: data.email,
+        //     phone: data.phone,
+        //     status: ['Checking'],
+        //     meals: data.meals
+        // })
 
-        // Generate URL with token for verifying email.
-        function tokenGenerate(id) {
-            return jwt.sign(id, jwtSecretKey)
-        }
-        const token = tokenGenerate(newOrder._id)
-        const verifyUrl = `http://192.168.0.118:5050/verify/${token}`
+        // // Generate URL with token for verifying email.
+        // function tokenGenerate(id) {
+        //     return jwt.sign(id, jwtSecretKey)
+        // }
+        // const token = tokenGenerate(newOrder._id)
+        // const verifyUrl = `http://localhost:5050/verify/${newOrder._id}/?${token}`
 
         // Sending verify message to customer email.
-
         const mailOptions = {
-            from: 'sizningemail@gmail.com', // Kimdan
-            to: 'qabulqiluvchi@example.com', // Kimga
+            from: MyTestEmail, // Kimdan
+            to: 'nabiy5511@gmail.com', // Kimga
             subject: 'Salom dunyo!', // Mavzu
             text: 'Bu Nodemailer orqali yuborilgan email!' // Email matni
         };
@@ -56,10 +48,10 @@ exports.createOder = async (req, res) => {
                 to,
                 subject: `Verifying`,
                 text: `For verifying click to button "Verify".`,
-                html: `<a href="${verifyUrl}">Verify</a>`,
+                // html: `<a href="${verifyUrl}">Verify</a>`,
             })
         }
-        const sending = await sendVerifyMessage('userg1570@gmail.com', 'userg1570@gmail.com')
+        const sending = await sendVerifyMessage('userg1570@gmail.com', 'nabiy5511@gmail.com')
         console.log(sending)
 
         return res.status(200).send({
