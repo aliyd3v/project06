@@ -35,18 +35,18 @@ router
     .post('/categories/delete', jwtAccessMiddleware, deleteAllCategories)
 
     // Meal route.
-    .post('/meal/create', jwtAccessMiddleware, checkSchema(mealCreateValidationSchema), createMeal)
+    .post('/meal/create', jwtAccessMiddleware, upload.single('file'), checkSchema(mealCreateValidationSchema), createMeal)
     .get('/meal', getAllMeals)
     .get('/meal/:id', getOneMeal)
     .post('/meal/:id/update', jwtAccessMiddleware, checkSchema(mealUpdateValidationSchema), updateOneMeal)
     .post('/meal/:id/delete', jwtAccessMiddleware, deleteOneMeal)
 
     // Order route.
-    .post('/order/create', checkSchema(orderCreateValidationSchema), createOder)
+    .post('/order/create', /*checkSchema(orderCreateValidationSchema),*/ createOder)
     .get('/order', getAllActualOrders)
 
     // Verify checking URL.
-    .post('/verify/:id', verifyUrl)
+    .post('/verify/:id/:token', verifyUrl)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
