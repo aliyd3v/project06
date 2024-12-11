@@ -5,7 +5,16 @@ const { validationController } = require("./validationController")
 exports.adminCreate = async (req, res) => {
     try {
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         const condidat = await Admin.findOne({ username: data.username })
         if (condidat) {
@@ -46,8 +55,8 @@ exports.getAllAdmins = async (req, res) => {
             error: false,
             data: { admins }
         })
-    } 
-    
+    }
+
     // Error handling.
     catch (error) {
         errorHandling(error, res)

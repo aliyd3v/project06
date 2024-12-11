@@ -1,6 +1,6 @@
 const { checkSchema } = require('express-validator')
 const { adminCreate, getAllAdmins } = require('../controller/adminController')
-const { login, logout } = require('../controller/authController')
+const { login } = require('../controller/authController')
 const { createCategory, getAllCategories, getOneCategory, updateOneCategory, deleteOneCategory, deleteAllCategories } = require('../controller/categoryController')
 const { createMeal, getAllMeals, getOneMeal, updateOneMeal, deleteOneMeal } = require('../controller/mealController')
 const { jwtAccessMiddleware } = require('../middleware/jwtAccessMiddleware')
@@ -12,7 +12,7 @@ const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateV
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
-const { createOder, getAllActualOrders } = require('../controller/orderController')
+const { getAllActualOrders, createOrderWithVerification } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 const { verifyUrl } = require('../controller/verifyController')
 
@@ -42,7 +42,7 @@ router
     .post('/meal/:id/delete', jwtAccessMiddleware, deleteOneMeal)
 
     // Order route.
-    .post('/order/create', /*checkSchema(orderCreateValidationSchema),*/ createOder)
+    .post('/order/create', checkSchema(orderCreateValidationSchema), createOrderWithVerification)
     .get('/order', jwtAccessMiddleware, getAllActualOrders)
 
     // Verify checking URL.

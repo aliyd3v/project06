@@ -10,11 +10,22 @@ const generateTokenWithOrder = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
 }
 
-exports.createOder = async (req, res) => {
+exports.createOrderWithVerification = async (req, res) => {
     try {
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
+        // Order payload.
         const order = {
             customer_name: data.customer_name,
             email: data.email,
@@ -22,20 +33,14 @@ exports.createOder = async (req, res) => {
             meals: data.meals
         }
 
+        // Generate token with order for verify token.
         const token = generateTokenWithOrder(order)
         const verifyUrl = `http://localhost:5050/verify/?token=${token}`
 
-        const result = sendToEmail(data.email, verifyUrl)
-        if (!result) {
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: {
-                    message: "Error sending message to email!"
-                }
-            })
-        }
+        // Sending verify message to customer email.
+        sendToEmail(data.email, verifyUrl)
 
+        // Responsing.
         return res.status(200).send({
             success: true,
             error: false,
@@ -43,7 +48,10 @@ exports.createOder = async (req, res) => {
                 message: "Verify URL has been sended to your email."
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }

@@ -11,8 +11,8 @@ exports.verifyUrl = async (req, res) => {
             })
         }
 
-    } 
-    
+    }
+
     // Error handling.
     catch (error) {
         errorHandling(error, res)
