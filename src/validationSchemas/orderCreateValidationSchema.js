@@ -17,15 +17,6 @@ exports.orderCreateValidationSchema = {
             errorMessage: 'Phone number is not valid!',
         },
     },
-    status: {
-        notEmpty: {
-            errorMessage: 'Status is required!',
-        },
-        isIn: {
-            options: [['Delivered', 'Pending', 'Canceled', 'Checking']],
-            errorMessage: 'Invalid status value!',
-        },
-    },
     meals: {
         notEmpty: {
             errorMessage: 'Meals is required!',

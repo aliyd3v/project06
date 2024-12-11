@@ -1,5 +1,4 @@
 const multer = require("multer")
-const { salting } = require('../helper/salt')
 const path = require('path')
 
 const storage = multer.diskStorage({

@@ -9,7 +9,16 @@ const fs = require('fs')
 exports.createMeal = async (req, res) => {
     try {
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         // Registration path and name of file.
         const filePath = req.file.path
@@ -150,7 +159,16 @@ exports.updateOneMeal = async (req, res) => {
         }
 
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         if (!req.file) {
             if (meal.en_name != data.en_name || meal.ru_name != data.ru_name || meal.en_description != data.en_description || meal.ru_description != data.ru_description || meal.price != data.price || meal.category != data.category) {

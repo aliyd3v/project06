@@ -9,7 +9,16 @@ const { Meal } = require("../model/mealModel")
 exports.createCategory = async (req, res) => {
     try {
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         // Registration path and name of file.
         const filePath = req.file.path
@@ -33,7 +42,16 @@ exports.createCategory = async (req, res) => {
         }
 
         // Uploading image to supabse storage and get image url.
-        await uploadImage(fileName, filePath)
+        const { errorSupabase } = await uploadImage(fileName, filePath)
+        if (errorSupabase) {
+            fs.unlinkSync(filePath)
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: { message: 'Error uploading image!' }
+            })
+        }
         const { publicUrl } = await getImageUrl(fileName, filePath)
         fs.unlinkSync(filePath)
 
@@ -141,7 +159,16 @@ exports.updateOneCategory = async (req, res) => {
         }
 
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         if (!req.file) {
             if (category.en_name != data.en_name || category.ru_name != data.ru_name) {

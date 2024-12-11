@@ -15,7 +15,16 @@ function tokenGenerate(id) {
 exports.login = async (req, res) => {
     try {
         // Result validation.
-        const data = validationController(req, res)
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
 
         // Checking user and password to valid.
         const user = await Admin.findOne({ username: data.username })
