@@ -27,7 +27,7 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
             // Responsing.
             return resForbidden(res)
         }
-        const { id } = jwt.verify(token, jwtSecretKey, function (error, decoded) {
+        const { id } = jwt.verify(token, jwtSecretKey, (error, decoded) => {
             if (error) {
                 // Responsing.
                 return resForbidden(res)

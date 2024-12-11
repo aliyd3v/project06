@@ -6,12 +6,14 @@ const orderSchema = new Schema({
     phone: String,
     status: {
         type: String,
-        enum: ['Delivered', 'Pending' ],
-        required: [true, 'Status required!']
+        enum: ['Delivered', 'Pending'],
     },
     meals: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Meal'
+        mealId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Meal'
+        },
+        amount: Number
     }]
 }, { timestamps: true })
 
