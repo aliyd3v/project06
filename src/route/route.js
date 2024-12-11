@@ -43,10 +43,10 @@ router
 
     // Order route.
     .post('/order/create', /*checkSchema(orderCreateValidationSchema),*/ createOder)
-    .get('/order', getAllActualOrders)
+    .get('/order', jwtAccessMiddleware, getAllActualOrders)
 
     // Verify checking URL.
-    .post('/verify/:id/:token', verifyUrl)
+    .post('/verify', verifyUrl)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
