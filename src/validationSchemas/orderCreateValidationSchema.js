@@ -1,4 +1,16 @@
 exports.orderCreateValidationSchema = {
+    customer_name: {
+        notEmpty: {
+            errorMessage: 'Customer name is required!',
+        },
+        isString: {
+            errorMessage: "Customer name cannot be empty!"
+        },
+        isLength: {
+            options: { max: 100 },
+            errorMessage: 'Customer name cannot exceed 100 characters!',
+        },
+    },
     email: {
         notEmpty: {
             errorMessage: 'Email is required!',

@@ -5,7 +5,7 @@ const { Admin } = require('../model/userModel')
 const { validationResult, matchedData } = require('express-validator')
 const { validationController } = require('./validationController')
 
-function tokenGenerate(id) {
+const tokenGenerate = (id) => {
     const payload = {
         id
     }
