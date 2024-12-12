@@ -12,7 +12,7 @@ const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateV
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
-const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder } = require('../controller/orderController')
+const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder, getOneOrder, markAsDelivered } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 
 const router = require('express').Router()
@@ -43,7 +43,9 @@ router
     // Order route.
     .post('/order/create', checkSchema(orderCreateValidationSchema), createOrderWithVerification)
     .get('/order', jwtAccessMiddleware, getAllActualOrders)
-    .post('/verify', verifyTokenAndCreateOrder)
+    .get('/verify', verifyTokenAndCreateOrder)
+    .get('/order/:id', jwtAccessMiddleware, getOneOrder)
+    .post('/order/:id/delivered', markAsDelivered)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)

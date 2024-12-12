@@ -3,14 +3,10 @@ const { errorHandling } = require("./errorController")
 
 exports.getAllHistory = async (req, res) => {
     try {
+        // Getting all orders with status with "Delivered".
         const histories = await Order.find({ status: 'Delivered' })
-        if (!histories.length) {
-            return res.status(200).send({
-                success: true,
-                error: false,
-                data: { message: "History is empty." }
-            })
-        }
+
+        // Responsing.
         return res.status(200).send({
             success: true,
             error: fase,
@@ -19,7 +15,10 @@ exports.getAllHistory = async (req, res) => {
                 histories
             }
         })
-    } catch (error) {
+    }
+
+    // Error handling.
+    catch (error) {
         errorHandling(error, res)
     }
 }

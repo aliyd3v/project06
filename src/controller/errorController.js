@@ -1,12 +1,6 @@
 exports.errorHandling = (error, res) => {
     console.log(error)
-    if (error.message) {
-        return res.status(400).send({
-            success: false,
-            data: null,
-            error: { message: error.message }
-        })
-    }
+    // Responsing.
     return res.status(500).send({
         success: false,
         data: null,
