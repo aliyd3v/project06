@@ -2,10 +2,13 @@ const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
 const { matchedData, validationResult, Result } = require('express-validator')
 const jwt = require('jsonwebtoken')
-const { jwtSecretKey, MyTestEmail } = require('../config/config')
+const { jwtSecretKey, domain } = require('../config/config')
 const { validationController } = require("./validationController")
-const { sendToEmail } = require("../helper/sendToMail")
+const { sendVerifyToEmail, sendSuccessMsgToEmail } = require("../helper/sendToMail")
 const { TokenStore } = require("../model/tokenStoreModel")
+const { Meal } = require("../model/mealModel")
+const { succesMsgToHtml } = require("../helper/successMsgToHtml")
+const { verifyFailedHtml } = require("../helper/verifyFailedHtml")
 
 const generateTokenWithOrder = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
@@ -47,10 +50,10 @@ exports.createOrderWithVerification = async (req, res) => {
 
         // Generate token with order for verify token.
         const token = generateTokenWithOrder(order)
-        const verifyUrl = `http://localhost:5050/verify/?token=${token}`
+        const verifyUrl = `${domain}/verify/?token=${token}`
 
         // Sending verify message to customer email.
-        sendToEmail(data.email, verifyUrl)
+        sendVerifyToEmail(data.email, verifyUrl)
 
         // Responsing.
         return res.status(200).send({
@@ -69,47 +72,28 @@ exports.createOrderWithVerification = async (req, res) => {
 }
 
 exports.verifyTokenAndCreateOrder = async (req, res) => {
-    const { query } = req
+    const { query: { token } } = req
     try {
-        // Getting token from URL.
-        const fullToken = query.token;
-        if (!fullToken) {
-            return res.status(400).send('Token topilmadi!')
+        // Checking token.        
+        if (!token) {
+            // Responsing.
+            return res.status(400).send(verifyFailedHtml)
         }
-        const token = new URLSearchParams(fullToken.split('?')[1]).get('token');
 
         // Checking token for valid.
         const { error, data } = verifyToken(token)
         if (error) {
             // Responsing.
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: {
-                    message: "Verify failed!"
-                }
-            })
+            return res.status(400).send(verifyFailedHtml)
         }
         if (!data.nonce) {
             // Responsing.
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: {
-                    message: "Verify failed!"
-                }
-            })
+            return res.status(400).send(verifyFailedHtml)
         }
         const nonce = await TokenStore.findOne({ nonce: data.nonce })
         if (!nonce) {
             // Responsing.
-            return res.status(400).send({
-                success: false,
-                data: null,
-                error: {
-                    message: "Verify failed!"
-                }
-            })
+            return res.status(400).send(verifyFailedHtml)
         }
 
         // Writing to database.
@@ -124,14 +108,11 @@ exports.verifyTokenAndCreateOrder = async (req, res) => {
         // Deleting nonce from database for once using from token.
         await TokenStore.findByIdAndDelete(nonce._id)
 
-        // Responsing.
-        return res.status(200).send({
-            success: true,
-            error: false,
-            data: {
-                message: "Verify complated successfully."
-            }
-        })
+        // Create success message to customer email.
+        const html = succesMsgToHtml(data.customer_name)
+
+        // Responsing with html.
+        return res.status(200).send(html)
     }
 
     // Error handling.
@@ -143,7 +124,7 @@ exports.verifyTokenAndCreateOrder = async (req, res) => {
 exports.getAllActualOrders = async (req, res) => {
     try {
         // Getting all orders with status "Pending".
-        const actualOrders = await Order.find({ status: "Pending" })
+        const orders = await Order.find({ status: "Pending" })
 
         // Responsing.
         return res.status(200).send({
@@ -151,7 +132,7 @@ exports.getAllActualOrders = async (req, res) => {
             error: false,
             data: {
                 message: "Orders with 'Pending' status getted successfully.",
-                orders: actualOrders
+                orders
             }
         })
     }
@@ -171,6 +152,18 @@ exports.getOneOrder = async (req, res) => {
         // Getting an order from database by id.
         const order = await Order.findById(id)
 
+        // Checking order for exists.
+        if (!order) {
+            // Responsing.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: {
+                    message: "Order is not found!"
+                }
+            })
+        }
+
         // Responsing.
         return res.status(200).send({
             success: true,
@@ -182,5 +175,41 @@ exports.getOneOrder = async (req, res) => {
         })
     } catch (error) {
         errorHandling(error, res)
+    }
+}
+
+exports.markAsDelivered = async (req, res) => {
+    const { params: { id } } = req
+    try {
+        // Checking id to valid.
+        idChecking(req, res, id)
+
+        // Getting an order from database by id.
+        let order = await Order.findById(id)
+
+        // Checking order for exists.
+        if (!order) {
+            // Responsing.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: {
+                    message: "Order is not found!"
+                }
+            })
+        }
+
+        // Writing update to database.
+        order.status = 'Delivered'
+        await Order.findByIdAndUpdate(id, order)
+
+        // Responsing.
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: { message: "Order status has been updated successfully." }
+        })
+    } catch (error) {
+
     }
 }

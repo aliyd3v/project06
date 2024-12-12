@@ -2,19 +2,19 @@ const nodemailer = require('nodemailer');
 const { MyTestEmail, MyTestEmailPassword } = require('../config/config');
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: MyTestEmail,
-    pass: MyTestEmailPassword
-  }
+    service: 'gmail',
+    auth: {
+        user: MyTestEmail,
+        pass: MyTestEmailPassword
+    }
 });
 
-exports.sendToEmail = (customerEmail, verifyUrl) => {
-  const mailOptions = {
-    from: MyTestEmail,
-    to: customerEmail,
-    subject: 'Tasdiqlash uchun link',
-    html: `<!DOCTYPE html>
+exports.sendVerifyToEmail = (customerEmail, verifyUrl) => {
+    const mailOptions = {
+        from: MyTestEmail,
+        to: customerEmail,
+        subject: 'Tasdiqlash uchun link',
+        html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -67,13 +67,11 @@ exports.sendToEmail = (customerEmail, verifyUrl) => {
     <div class="container">
         <h1>Verify Your Email</h1>
         <p>Click the button below to verify your email address:</p>
-        <form action="http://localhost:5050/verify/?token=${verifyUrl}" method="post">
-            <button class="verify-button" type="submit">Verify</button>
-        </form>
+        <a class="verify-button" style="text-decoration:none; color=white;" href="${verifyUrl}">Verify</a>
     </div>
 </body>
 </html>
 `
-  };
-  transporter.sendMail(mailOptions);
+    };
+    const send = transporter.sendMail(mailOptions);
 }
