@@ -1,4 +1,4 @@
-const config = require('dotenv').config()
+require('dotenv').config()
 
 // JWT config.
 exports.jwtSecretKey = process.env.JWT_SECRET_KEY
@@ -21,5 +21,8 @@ exports.MyTestEmailPassword = process.env.MY_EMAIL_PASSWORD
 // Project status.
 exports.projectStatus = process.env.NODE_ENV
 
-// Cors origin domain.
+// API server domain.
 exports.domain = process.env.DOMAIN
+
+// Telegram bot API token.
+exports.botToken = process.env.BOT_TOKEN

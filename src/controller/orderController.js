@@ -6,9 +6,10 @@ const { jwtSecretKey, domain } = require('../config/config')
 const { validationController } = require("./validationController")
 const { sendVerifyToEmail, sendSuccessMsgToEmail } = require("../helper/sendToMail")
 const { TokenStore } = require("../model/tokenStoreModel")
-const { Meal } = require("../model/mealModel")
 const { succesMsgToHtml } = require("../helper/successMsgToHtml")
 const { verifyFailedHtml } = require("../helper/verifyFailedHtml")
+const { sendingOrderToTgChannel } = require("../helper/sendingOrderToTgChannel")
+const { gettingMealsFromOrder } = require("../helper/gettingMealsFromOrder")
 
 const generateTokenWithOrder = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
@@ -97,16 +98,31 @@ exports.verifyTokenAndCreateOrder = async (req, res) => {
         }
 
         // Writing to database.
-        await Order.create({
+        const newOrder = await Order.create({
             customer_name: data.customer_name,
             phone: data.phone,
             email: data.email,
             meals: data.meals,
-            status: "Pending",
+            status: "Pending"
         })
 
         // Deleting nonce from database for once using from token.
         await TokenStore.findByIdAndDelete(nonce._id)
+
+        // Getting meals from order.
+        const meals = await gettingMealsFromOrder(data.meals)
+
+        // Sending order to telegram channel.
+        const selectedPieceFromOrder = {
+            id: newOrder._id,
+            customer_name: data.customer_name,
+            phone: data.phone,
+            email: data.email,
+            meals,
+            status: "Pending",
+            createdAt: newOrder.createdAt
+        }
+        sendingOrderToTgChannel(selectedPieceFromOrder)
 
         // Create success message to customer email.
         const html = succesMsgToHtml(data.customer_name)
