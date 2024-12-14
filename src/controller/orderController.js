@@ -51,7 +51,7 @@ exports.createOrderWithVerification = async (req, res) => {
 
         // Generate token with order for verify token.
         const token = generateTokenWithOrder(order)
-        const verifyUrl = `${domain}/verify/?token=${token}`
+        const verifyUrl = `${domain}/verify/email-verification?token=${token}`
 
         // Sending verify message to customer email.
         sendVerifyToEmail(data.email, verifyUrl)
@@ -73,8 +73,12 @@ exports.createOrderWithVerification = async (req, res) => {
 }
 
 exports.verifyTokenAndCreateOrder = async (req, res) => {
-    const { query: { token } } = req
+    const { params: { id }, query: { token } } = req
     try {
+        if (id != 'email-verification') {
+            // Responsing.
+            return res.status(400).send(verifyFailedHtml)
+        }
         // Checking token.        
         if (!token) {
             // Responsing.
