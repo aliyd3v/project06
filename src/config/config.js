@@ -26,3 +26,9 @@ exports.domain = process.env.DOMAIN
 
 // Telegram bot API token.
 exports.botToken = process.env.BOT_TOKEN
+
+// English telegram channel username.
+exports.telegramChannelEn = process.env.TG_CHANNEL_EN
+
+// Russian telegram channel username.
+exports.telegramChannelRu = process.env.TG_CHANNEL_RU

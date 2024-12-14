@@ -43,7 +43,7 @@ router
     // Order route.
     .post('/order/create', checkSchema(orderCreateValidationSchema), createOrderWithVerification)
     .get('/order', jwtAccessMiddleware, getAllActualOrders)
-    .get('/verify', verifyTokenAndCreateOrder)
+    .get('/verify/:id', verifyTokenAndCreateOrder)
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
 
