@@ -1,10 +1,10 @@
 require('dotenv').config()
 
+// PORT.
+exports.port = process.env.PORT || 3030
+
 // JWT config.
 exports.jwtSecretKey = process.env.JWT_SECRET_KEY
-
-// CookieParser config.
-exports.cookieParserKey = process.env.COOKIE_PARSER_KEY
 
 // MongoDB config.
 exports.mongodbUrl = process.env.MONGODB_URL

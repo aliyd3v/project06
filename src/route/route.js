@@ -14,6 +14,7 @@ const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
 const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder, getOneOrder, markAsDelivered } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
+const { directNotFound } = require('../controller/directNotFoundMessage')
 
 const router = require('express').Router()
 
@@ -49,5 +50,8 @@ router
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
+
+    // Direct not found message.
+    .use(directNotFound)
 
 module.exports = router
