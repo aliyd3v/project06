@@ -8,7 +8,7 @@ const resForbidden = (res) => {
     return res.status(403).send({
         success: false,
         data: null,
-        error: { message: "Access denied. Token is valid!" }
+        error: { message: "Access denied. Invalid token!" }
     })
 }
 
