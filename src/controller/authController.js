@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { errorHandling } = require("./errorController")
-const { jwtSecretKey, projectStatus } = require('../config/config')
+const { jwtSecretKey } = require('../config/config')
 const { Admin } = require('../model/userModel')
-const { validationResult, matchedData } = require('express-validator')
 const { validationController } = require('./validationController')
 
 const tokenGenerate = (id) => {
