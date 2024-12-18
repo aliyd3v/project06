@@ -15,6 +15,8 @@ const { orderCreateValidationSchema } = require('../validationSchemas/orderCreat
 const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder, getOneOrder, markAsDelivered } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
+const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
+const { createStol } = require('../controller/stolController')
 
 const router = require('express').Router()
 
@@ -47,6 +49,9 @@ router
     .get('/verify/:id', verifyTokenAndCreateOrder)
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
+
+    // Stol route.
+    .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
