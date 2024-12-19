@@ -1,6 +1,7 @@
-const { status } = require("express/lib/response")
 const { Stol } = require("../model/stolModel")
 const { errorHandling } = require("./errorController")
+const { idChecking } = require("./idController")
+const { validationController } = require("./validationController")
 
 exports.createStol = async (req, res) => {
     try {
@@ -33,8 +34,7 @@ exports.createStol = async (req, res) => {
         // Writing to database.
         await Stol.create({
             number: data.number,
-            price: data.price,
-            status: "Open"
+            price: data.price
         })
 
         // Responsing.
@@ -147,7 +147,7 @@ exports.updateOneStol = async (req, res) => {
         }
 
         // Checking for changing data.
-        if (stol.number == data.number && stol.price == data.price && stol.status == data.status) {
+        if (stol.number == data.number && stol.price == data.price) {
             // Responsing.
             return res.status(201).send({
                 success: true,
@@ -161,7 +161,6 @@ exports.updateOneStol = async (req, res) => {
         // Writing updates to database.
         stol.number = data.number
         stol.price = data.price
-        stol.status = data.status
         await Stol.findByIdAndUpdate(id, stol)
 
         // Responsing.
@@ -203,7 +202,7 @@ exports.deleteOneStol = async (req, res) => {
 
         // Deleting stol from database.
         await Stol.findByIdAndDelete(id)
-        
+
         // Responsing.
         return res.status(201).send({
             success: true,

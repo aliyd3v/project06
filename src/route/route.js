@@ -16,7 +16,10 @@ const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrd
 const { getAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
 const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
-const { createStol } = require('../controller/stolController')
+const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol } = require('../controller/stolController')
+const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
+const { createBookingWithVerification } = require('../controller/bookingController')
+const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
 
 const router = require('express').Router()
 
@@ -52,6 +55,13 @@ router
 
     // Stol route.
     .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
+    .get('/stol', jwtAccessMiddleware, getAllStols)
+    .get('/stol/:id', jwtAccessMiddleware, getOneStol)
+    .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
+    .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
+
+    // Booking route.
+    .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)

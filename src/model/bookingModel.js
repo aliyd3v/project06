@@ -4,11 +4,8 @@ const bookingSchema = new Schema({
     customer_name: String,
     email: String,
     phone: String,
-    Date: Date,
-    status: {
-        type: String,
-        enum: ['Active', 'History'],
-    },
+    date: Date,
+    is_active: Boolean,
     stol: { type: Schema.Types.ObjectId, ref: 'Stol' }
 }, { timestamps: true })
 
