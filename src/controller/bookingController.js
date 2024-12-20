@@ -43,7 +43,17 @@ exports.createBookingWithVerification = async (req, res) => {
         const condidats = await Booking.find({ stol: stol._id })
         if (condidats) {
             const condidatsDate = condidats.map(condidat => condidat.date.toLocaleDateString())
-            // ???
+            const checkExistsDate = condidatsDate.includes(data.date.toLocaleDateString())
+            if (checkExistsDate == true) {
+                // Responsing.
+                return res.status(404).send({
+                    success: false,
+                    data: null,
+                    error: {
+                        message: `Stol is already booked for ${data.date.toLocaleDateString()}. Please book another stol or another day!`
+                    }
+                })
+            }
         }
 
         // Create nonce for once using from token.
@@ -56,6 +66,7 @@ exports.createBookingWithVerification = async (req, res) => {
             email: data.email,
             phone: data.phone,
             stol_number: data.stol_number,
+            date: data.date,
             nonce
         }
 
