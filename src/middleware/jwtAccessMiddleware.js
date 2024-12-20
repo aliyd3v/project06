@@ -36,7 +36,15 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
         })
 
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idErrorr } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
         const admin = await Admin.findById(id)
         if (!admin) {
             // Responsing.

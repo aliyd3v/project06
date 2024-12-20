@@ -79,7 +79,15 @@ exports.getOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Geting a stol from database via id.
         const stol = await Stol.findById(id)
@@ -117,7 +125,15 @@ exports.updateOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Geting a stol from database via id.
         const stol = await Stol.findById(id)
@@ -183,7 +199,15 @@ exports.deleteOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Geting a stol from database via id.
         const stol = await Stol.findById(id)

@@ -1,9 +1,9 @@
-exports.succesMsgToHtml = (customerName, meals) => {
+exports.succesMsgToHtml = (customerName, attribute) => {
     return `<html lang="en">
             <head>
                 <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Order Success</title>
+                        <title>${attribute} Success</title>
                         <style>
                             body {
                                 font - family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -75,11 +75,11 @@ exports.succesMsgToHtml = (customerName, meals) => {
                     <body>
                         <div class="container">
                             <div class="header">
-                                <h1>Order Successfully Received!</h1>
+                                <h1>${attribute} Successfully Received!</h1>
                             </div>
                             <div class="content">
                                 <p>Dear <strong>${customerName}</strong>,</p>
-                                <p>We are delighted to inform you that your order has been successfully received. Below are the details of your order:</p>
+                                <p>We are delighted to inform you that your ${attribute} has been successfully received.</p>
                             </div>
                             <div class="footer">
                                 <p>If you have any questions, feel free to contact our support team.</p>

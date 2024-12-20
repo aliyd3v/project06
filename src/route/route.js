@@ -12,7 +12,7 @@ const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateV
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
-const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder, getOneOrder, markAsDelivered } = require('../controller/orderController')
+const { getAllActualOrders, createOrderWithVerification, getOneOrder, markAsDelivered } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
 const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
@@ -20,6 +20,7 @@ const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol } = re
 const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
 const { createBookingWithVerification } = require('../controller/bookingController')
 const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
+const { verifyTokenAndCreateOrderOrBooking } = require('../controller/verifyContorller')
 
 const router = require('express').Router()
 
@@ -50,19 +51,21 @@ router
     // Order route.
     .post('/order/create', checkSchema(orderCreateValidationSchema), createOrderWithVerification)
     .get('/order', jwtAccessMiddleware, getAllActualOrders)
-    .get('/verify/:id', verifyTokenAndCreateOrder)
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
-
+    
     // Stol route.
     .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
     .get('/stol', jwtAccessMiddleware, getAllStols)
     .get('/stol/:id', jwtAccessMiddleware, getOneStol)
     .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
     .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
-
+    
     // Booking route.
     .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
+    
+    // Verify token route.
+    .get('/verify/:id', verifyTokenAndCreateOrderOrBooking)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
