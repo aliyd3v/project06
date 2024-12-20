@@ -39,9 +39,11 @@ exports.createBookingWithVerification = async (req, res) => {
                 }
             })
         }
+        // Checking condidats on data.date
         const condidats = await Booking.find({ stol: stol._id })
         if (condidats) {
-            // Checking condidats on data.date
+            const condidatsDate = condidats.map(condidat => condidat.date.toLocaleDateString())
+            // ???
         }
 
         // Create nonce for once using from token.
@@ -58,7 +60,7 @@ exports.createBookingWithVerification = async (req, res) => {
         }
 
         // Generate token with order for verify token.
-        const token = generateTokenWithOrder(booking)
+        const token = generateTokenWithBooking(booking)
         const verifyUrl = `${domain}/verify/email-verification?token=${token}`
 
         // Sending verify message to customer email.

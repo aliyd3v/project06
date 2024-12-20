@@ -137,6 +137,45 @@ exports.getOneCategory = async (req, res) => {
     }
 }
 
+exports.getCategoryMeals = async (req, res) => {
+    const { params: { id } } = req
+    try {
+        // Checking id to valid.
+        idChecking(req, res, id)
+
+        // Searching category with id.
+        const category = await Category.findById(id)
+
+        // Checking to exists.
+        if (!category) {
+            // Responsing.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: { message: "Category is not found!" }
+            })
+        }
+
+        // Getting all meals in selected category.
+        const meals = await Meal.find({ category: category._id })
+
+        // Responsing.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: `Meals in category ${category.en_name} (${category.ru_name}) has been getted successful.`,
+                meals
+            }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
 exports.updateOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
