@@ -10,6 +10,6 @@ exports.idChecking = (req, id) => {
             return { idError: { message: "Url or Id is wrong!" } }
         }
     } else {
-        return { error: { message: "Url or Id is wrong!" } }
+        return { idError: { message: "Url or Id is wrong!" } }
     }
 }
