@@ -1,7 +1,7 @@
 const { checkSchema } = require('express-validator')
 const { adminCreate, getAllAdmins } = require('../controller/adminController')
 const { login } = require('../controller/authController')
-const { createCategory, getAllCategories, getOneCategory, updateOneCategory, deleteOneCategory, deleteAllCategories } = require('../controller/categoryController')
+const { createCategory, getAllCategories, getOneCategory, updateOneCategory, deleteOneCategory, deleteAllCategories, getCategoryMeals } = require('../controller/categoryController')
 const { createMeal, getAllMeals, getOneMeal, updateOneMeal, deleteOneMeal } = require('../controller/mealController')
 const { jwtAccessMiddleware } = require('../middleware/jwtAccessMiddleware')
 const { categoryCreateValidationSchema } = require('../validationSchemas/categoryCreateValidationSchema')
@@ -15,6 +15,11 @@ const { orderCreateValidationSchema } = require('../validationSchemas/orderCreat
 const { getAllActualOrders, createOrderWithVerification, verifyTokenAndCreateOrder, getOneOrder, markAsDelivered } = require('../controller/orderController')
 const { getAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
+const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
+const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol } = require('../controller/stolController')
+const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
+const { createBookingWithVerification } = require('../controller/bookingController')
+const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
 
 const router = require('express').Router()
 
@@ -30,6 +35,7 @@ router
     .post('/category/create', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryCreateValidationSchema), createCategory)
     .get('/category', getAllCategories)
     .get('/category/:id', getOneCategory)
+    .get('/category/:id/meals', getCategoryMeals)
     .post('/category/:id/update', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryUpdateValidationSchema), updateOneCategory)
     .post('/category/:id/delete', jwtAccessMiddleware, deleteOneCategory)
     .post('/categories/delete', jwtAccessMiddleware, deleteAllCategories)
@@ -47,6 +53,16 @@ router
     .get('/verify/:id', verifyTokenAndCreateOrder)
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
+
+    // Stol route.
+    .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
+    .get('/stol', jwtAccessMiddleware, getAllStols)
+    .get('/stol/:id', jwtAccessMiddleware, getOneStol)
+    .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
+    .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
+
+    // Booking route.
+    .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
