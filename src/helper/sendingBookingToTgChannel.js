@@ -2,42 +2,25 @@ const telegramBot = require('node-telegram-bot-api');
 const { botToken, telegramChannelEn, telegramChannelRu } = require('../config/config');
 const bot = new telegramBot(botToken)
 
-exports.sendingOrderToTgChannel = (message) => {
+exports.sendingBookingToTgChannel = (message) => {
     // Formatting to english.
     let formatMessageEN = (msg) => {
-        const meals = msg.meals
-        let mealsText = ''
-        for (let i = 0; i < meals.length; i++) {
-            mealsText += `${i + 1}. 
-   Meal name: ${meals[i].en_name},
-   Amount: ${meals[i].amount},
-   Price: $${meals[i].price}
-`
-        }
-        let result = `Order id: ${msg.id},
+        let result = `Booking id: ${msg.id},
 Customer name: ${msg.customer_name},
 Email: ${msg.email},
 Phone: ${msg.phone},
 Status: ${msg.status},
 Created at: ${msg.createdAt.toLocaleDateString() + ' ' + msg.createdAt.toLocaleTimeString()}
 
-Meals:
-${mealsText}`
+Stol:
+    Number: ${message.stol.number},
+    Date: ${message.stol.date.toLocaleDateString() + ' ' + message.stol.date.toLocaleTimeString}`
 
         return result
     }
 
     // Formatting to russian.
     const formatMessageRU = (msg) => {
-        const meals = msg.meals
-        let mealsText = ''
-        for (let i = 0; i < meals.length; i++) {
-            mealsText += `${i + 1}. 
-   Название блюда: ${meals[i].ru_name},
-   Количество: ${meals[i].amount},
-   Цена: $${meals[i].price}
-`
-        }
         let result = `Id бронирования: ${msg.id},
 Имя клиента: ${msg.customer_name},
 Электронная почта: ${msg.email},
@@ -45,8 +28,9 @@ ${mealsText}`
 Статус: ${msg.status},
 Создано в: ${msg.createdAt.toLocaleDateString() + ' ' + msg.createdAt.toLocaleTimeString()}
 
-Блюди:
-${mealsText}`
+Стол:
+    Номер: ${msg.stol.number},
+    Дата: ${msg.stol.date.toLocaleDateString() + ' ' + message.stol.date.toLocaleTimeString}`
 
         return result
     }
@@ -57,7 +41,7 @@ ${mealsText}`
     bot.sendMessage(telegramChannelEn, formattedMessageEN)
         .then(() => {
             console.log(
-                `Order sent to EN Telegram channel at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+                `Booking sended to EN Telegram channel at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
             )
         })
         .catch((error) => {
@@ -68,7 +52,7 @@ ${mealsText}`
     bot.sendMessage(telegramChannelRu, formattedMessageRU)
         .then(() => {
             console.log(
-                `Order sent to RU Telegram channel at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
+                `Booking sended to RU Telegram channel at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
             )
         })
         .catch((error) => {

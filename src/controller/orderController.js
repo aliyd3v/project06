@@ -15,12 +15,6 @@ const generateTokenWithOrder = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
 }
 
-const verifyToken = (token) => {
-    return jwt.verify(token, jwtSecretKey, (error, decoded) => {
-        return { data: decoded, error }
-    })
-}
-
 exports.createOrderWithVerification = async (req, res) => {
     try {
         // Result validation.
@@ -72,75 +66,6 @@ exports.createOrderWithVerification = async (req, res) => {
     }
 }
 
-exports.verifyTokenAndCreateOrder = async (req, res) => {
-    const { params: { id }, query: { token } } = req
-    try {
-        if (id != 'email-verification') {
-            // Responsing.
-            return res.status(400).send(verifyFailedHtml)
-        }
-        // Checking token.        
-        if (!token) {
-            // Responsing.
-            return res.status(400).send(verifyFailedHtml)
-        }
-
-        // Checking token for valid.
-        const { error, data } = verifyToken(token)
-        if (error) {
-            // Responsing.
-            return res.status(400).send(verifyFailedHtml)
-        }
-        if (!data.nonce) {
-            // Responsing.
-            return res.status(400).send(verifyFailedHtml)
-        }
-        const nonce = await TokenStore.findOne({ nonce: data.nonce })
-        if (!nonce) {
-            // Responsing.
-            return res.status(400).send(verifyFailedHtml)
-        }
-
-        // Writing to database.
-        const newOrder = await Order.create({
-            customer_name: data.customer_name,
-            phone: data.phone,
-            email: data.email,
-            meals: data.meals,
-            status: "Pending"
-        })
-
-        // Deleting nonce from database for once using from token.
-        await TokenStore.findByIdAndDelete(nonce._id)
-
-        // Getting meals from order.
-        const meals = await gettingMealsFromOrder(data.meals)
-
-        // Sending order to telegram channel.
-        const selectedPieceFromOrder = {
-            id: newOrder._id,
-            customer_name: data.customer_name,
-            phone: data.phone,
-            email: data.email,
-            meals,
-            status: "Pending",
-            createdAt: newOrder.createdAt
-        }
-        sendingOrderToTgChannel(selectedPieceFromOrder)
-
-        // Create success message to customer email.
-        const html = succesMsgToHtml(data.customer_name)
-
-        // Responsing with html.
-        return res.status(200).send(html)
-    }
-
-    // Error handling.
-    catch (error) {
-        errorHandling(error, res)
-    }
-}
-
 exports.getAllActualOrders = async (req, res) => {
     try {
         // Getting all orders with status "Pending".
@@ -167,7 +92,15 @@ exports.getOneOrder = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Getting an order from database by id.
         const order = await Order.findById(id)
@@ -202,7 +135,15 @@ exports.markAsDelivered = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Getting an order from database by id.
         let order = await Order.findById(id)

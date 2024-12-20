@@ -109,7 +109,15 @@ exports.getOneMeal = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Checking meal to exists.
         const meal = await Meal.findById(id).populate('category')
@@ -142,7 +150,15 @@ exports.updateOneMeal = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         const meal = await Meal.findById(id).populate('category')
         if (!meal) {
@@ -261,7 +277,15 @@ exports.deleteOneMeal = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Checking meal to exists.
         const meal = await Meal.findById(id)

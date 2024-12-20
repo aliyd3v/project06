@@ -42,15 +42,15 @@ exports.createBookingWithVerification = async (req, res) => {
         // Checking condidats on data.date
         const condidats = await Booking.find({ stol: stol._id })
         if (condidats) {
-            const condidatsDate = condidats.map(condidat => condidat.date.toLocaleDateString())
-            const checkExistsDate = condidatsDate.includes(data.date.toLocaleDateString())
-            if (checkExistsDate == true) {
+            const condidatsDates = condidats.map(condidat => condidat.date.toLocaleDateString())
+            const existsDates = condidatsDates.includes(data.date.toLocaleDateString())
+            if (existsDates == true) {
                 // Responsing.
-                return res.status(404).send({
+                return res.status(400).send({
                     success: false,
                     data: null,
                     error: {
-                        message: `Stol is already booked for ${data.date.toLocaleDateString()}. Please book another stol or another day!`
+                        message: `Stol is already booked for ${data.date.toLocaleDateString()}. Please book another stol or another date!`
                     }
                 })
             }
@@ -60,13 +60,17 @@ exports.createBookingWithVerification = async (req, res) => {
         const nonce = crypto.randomUUID()
         await TokenStore.create({ nonce })
 
+
         // Order payload.
+        const bookingStol = {
+            number: data.stol_number,
+            date: data.date
+        }
         const booking = {
             customer_name: data.customer_name,
             email: data.email,
             phone: data.phone,
-            stol_number: data.stol_number,
-            date: data.date,
+            stol: bookingStol,
             nonce
         }
 
@@ -106,7 +110,17 @@ exports.checkBookingForAvailability = async (req, res) => {
 
 exports.getAllActiveBooking = async (req, res) => {
     try {
+        const bookings = await Booking.find().sort({ date: "desc" }).limit()
 
+        // Responsing.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Getted all bookings with active status.",
+                bookings
+            }
+        })
     }
 
     // Error handling.

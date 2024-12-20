@@ -1,18 +1,20 @@
+const { Booking } = require("../model/bookingModel")
 const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
 
 exports.getAllHistory = async (req, res) => {
     try {
         // Getting all orders with status with "Delivered".
-        const histories = await Order.find({ status: 'Delivered' })
+        const orders = await Order.find({ status: 'Delivered' }).sort({ createdAt: "desc" })
+        const books = await Booking.find({ is_active: false }).sort({ date: "desc" })
 
         // Responsing.
         return res.status(200).send({
             success: true,
-            error: fase,
+            error: false,
             data: {
                 message: "History getted is successful.",
-                histories
+                history: { orders, books }
             }
         })
     }

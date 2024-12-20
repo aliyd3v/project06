@@ -105,7 +105,15 @@ exports.getOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Searching category with id.
         const category = await Category.findById(id)
@@ -141,7 +149,15 @@ exports.getCategoryMeals = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Searching category with id.
         const category = await Category.findById(id)
@@ -180,7 +196,15 @@ exports.updateOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Checking category to exists.
         const category = await Category.findById(id)
@@ -292,7 +316,15 @@ exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        idChecking(req, res, id)
+        const { idError } = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
         // Checking category to exists.
         const category = await Category.findById(id)
