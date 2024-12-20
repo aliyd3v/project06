@@ -105,7 +105,7 @@ exports.getOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
@@ -149,7 +149,7 @@ exports.getCategoryMeals = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
@@ -196,7 +196,7 @@ exports.updateOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
@@ -316,7 +316,7 @@ exports.deleteOneCategory = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({

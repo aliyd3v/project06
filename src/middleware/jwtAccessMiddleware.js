@@ -36,7 +36,7 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
         })
 
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({

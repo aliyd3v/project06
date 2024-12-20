@@ -79,7 +79,7 @@ exports.getOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
@@ -125,7 +125,7 @@ exports.updateOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
@@ -199,7 +199,7 @@ exports.deleteOneStol = async (req, res) => {
     const { params: { id } } = req
     try {
         // Checking id to valid.
-        const { idError } = idChecking(req, id)
+        const idError = idChecking(req, id)
         if (idError) {
             // Responsing.
             return res.status(400).send({
