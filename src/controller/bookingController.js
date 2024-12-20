@@ -60,7 +60,7 @@ exports.createBookingWithVerification = async (req, res) => {
         const nonce = crypto.randomUUID()
         await TokenStore.create({ nonce })
 
-        
+
         // Order payload.
         const bookingStol = {
             number: data.stol_number,
@@ -110,7 +110,17 @@ exports.checkBookingForAvailability = async (req, res) => {
 
 exports.getAllActiveBooking = async (req, res) => {
     try {
+        const bookings = await Booking.find().sort({ date: "desc" }).limit()
 
+        // Responsing.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Getted all bookings with active status.",
+                bookings
+            }
+        })
     }
 
     // Error handling.

@@ -1,4 +1,5 @@
 const telegramBot = require('node-telegram-bot-api');
+const { botToken, telegramChannelEn, telegramChannelRu } = require('../config/config');
 const bot = new telegramBot(botToken)
 
 exports.sendingBookingToTgChannel = (message) => {
