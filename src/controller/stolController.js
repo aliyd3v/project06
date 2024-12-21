@@ -242,3 +242,55 @@ exports.deleteOneStol = async (req, res) => {
         errorHandling(error, res)
     }
 }
+
+exports.createManyStols = async (req, res) => {
+    const { body } = req
+    try {
+        const { begin, amount, price } = body
+        if (!begin || !amount || !price) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: { message: "Amount, price and begin is required!" }
+            })
+        }
+
+        await new Promise(async (resolve, reject) => {
+            for (let i = begin; i <= amount; i++) {
+                await Stol.create({
+                    number: i,
+                    price: price
+                })
+            }
+            resolve()
+        })
+
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: { message: "Create many successfully" }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.deleteManyStols = async (req, res) => {
+    try {
+        await Stol.deleteMany()
+
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: { message: "Delete all stols successfully." }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}

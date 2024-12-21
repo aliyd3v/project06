@@ -1,6 +1,11 @@
+const { jwtSecretKey, domain } = require("../config/config");
+const { sendVerifyToEmail } = require("../helper/sendToMail");
 const { Booking } = require("../model/bookingModel");
 const { Stol } = require("../model/stolModel");
-const { errorHandling } = require("./errorController")
+const { TokenStore } = require("../model/tokenStoreModel");
+const { errorHandling } = require("./errorController");
+const { validationController } = require("./validationController");
+const jwt = require('jsonwebtoken')
 
 const generateTokenWithBooking = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
@@ -43,7 +48,7 @@ exports.createBookingWithVerification = async (req, res) => {
         const condidats = await Booking.find({ stol: stol._id })
         if (condidats) {
             const condidatsDates = condidats.map(condidat => condidat.date.toLocaleDateString())
-            const existsDates = condidatsDates.includes(data.date.toLocaleDateString())
+            const existsDates = condidatsDates.includes(data.date)
             if (existsDates == true) {
                 // Responsing.
                 return res.status(400).send({
@@ -99,7 +104,7 @@ exports.createBookingWithVerification = async (req, res) => {
 
 exports.checkBookingForAvailability = async (req, res) => {
     try {
-
+        
     }
 
     // Error handling.
@@ -110,7 +115,7 @@ exports.checkBookingForAvailability = async (req, res) => {
 
 exports.getAllActiveBooking = async (req, res) => {
     try {
-        const bookings = await Booking.find().sort({ date: "desc" }).limit()
+        const bookings = await Booking.find().populate('stol').sort({ date: "desc" })/*.limit(10)*/
 
         // Responsing.
         return res.status(200).send({
@@ -130,8 +135,43 @@ exports.getAllActiveBooking = async (req, res) => {
 }
 
 exports.getOneBooking = async (req, res) => {
+    const { params: { id } } = req
     try {
+        // Checking id to valid.
+        const idError = idChecking(req, id)
+        if (idError) {
+            // Responsing.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
 
+        // Geting a stol from database via id.
+        const booking = await Booking.findById(id).populate('stol')
+
+        // Checking stol for exists.
+        if (!booking) {
+            // Responsing.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: {
+                    message: "Booking is not found!"
+                }
+            })
+        }
+
+        // Responsing.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Booking getted successfully.",
+                booking
+            }
+        })
     }
 
     // Error handling.
