@@ -6,6 +6,7 @@ const { sendingOrderToTgChannel } = require('../helper/sendingOrderToTgChannel')
 const { gettingMealsFromOrder } = require('../helper/gettingMealsFromOrder')
 const { Booking } = require('../model/bookingModel')
 const { sendingBookingToTgChannel } = require('../helper/sendingBookingToTgChannel')
+const { errorHandling } = require('./errorController')
 
 const verifyToken = (token) => {
     return jwt.verify(token, jwtSecretKey, (error, decoded) => {

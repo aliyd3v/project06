@@ -1,15 +1,10 @@
 const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
-const { matchedData, validationResult, Result } = require('express-validator')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey, domain } = require('../config/config')
 const { validationController } = require("./validationController")
-const { sendVerifyToEmail, sendSuccessMsgToEmail } = require("../helper/sendToMail")
+const { sendVerifyToEmail } = require("../helper/sendToMail")
 const { TokenStore } = require("../model/tokenStoreModel")
-const { succesMsgToHtml } = require("../helper/successMsgToHtml")
-const { verifyFailedHtml } = require("../helper/verifyFailedHtml")
-const { sendingOrderToTgChannel } = require("../helper/sendingOrderToTgChannel")
-const { gettingMealsFromOrder } = require("../helper/gettingMealsFromOrder")
 
 const generateTokenWithOrder = (payload) => {
     return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
@@ -170,7 +165,10 @@ exports.markAsDelivered = async (req, res) => {
             error: false,
             data: { message: "Order status has been updated successfully." }
         })
-    } catch (error) {
-
+    } 
+    
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
     }
 }

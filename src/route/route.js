@@ -16,9 +16,9 @@ const { getAllActualOrders, createOrderWithVerification, getOneOrder, markAsDeli
 const { getAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
 const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
-const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol } = require('../controller/stolController')
+const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol, createManyStols, deleteManyStols } = require('../controller/stolController')
 const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
-const { createBookingWithVerification } = require('../controller/bookingController')
+const { createBookingWithVerification, getAllActiveBooking, getOneBooking } = require('../controller/bookingController')
 const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
 const { verifyTokenAndCreateOrderOrBooking } = require('../controller/verifyContorller')
 
@@ -53,17 +53,23 @@ router
     .get('/order', jwtAccessMiddleware, getAllActualOrders)
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
-    
+
     // Stol route.
     .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
     .get('/stol', jwtAccessMiddleware, getAllStols)
     .get('/stol/:id', jwtAccessMiddleware, getOneStol)
     .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
     .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
-    
+
+    // For testing.
+    .post('/stol/create-many', jwtAccessMiddleware, createManyStols)
+    .post('/stol/delete-many', jwtAccessMiddleware, deleteManyStols)
+
     // Booking route.
     .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
-    
+    .get('/booking', jwtAccessMiddleware, getAllActiveBooking)
+    .get('/booking/:id', jwtAccessMiddleware, getOneBooking)
+
     // Verify token route.
     .get('/verify/:id', verifyTokenAndCreateOrderOrBooking)
 
