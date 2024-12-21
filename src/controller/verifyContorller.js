@@ -87,7 +87,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 customer_name: data.customer_name,
                 email: data.email,
                 phone: data.phone,
-                stol: date.stol.number,
+                stol: data.stol.number,
                 date: data.stol.date,
                 is_active: true
             })
