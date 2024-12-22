@@ -8,6 +8,8 @@ const { Booking } = require('../model/bookingModel')
 const { sendingBookingToTgChannel } = require('../helper/sendingBookingToTgChannel')
 const { errorHandling } = require('./errorController')
 const { jwtSecretKey } = require('../config/config')
+const { Stol } = require('../model/stolModel')
+const { verifyFailedHtml } = require('../helper/verifyFailedHtml')
 
 const verifyToken = (token) => {
     return jwt.verify(token, jwtSecretKey, (error, decoded) => {
@@ -83,11 +85,18 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
 
         // For booking.
         else if (data.stol) {
+            let stol
+            if (data.stol.number) {
+                stol = await Stol.findOne({ number: data.stol.number })
+            }
+
+            console.log(data.stol.date)
+
             const newBooking = await Booking.create({
                 customer_name: data.customer_name,
                 email: data.email,
                 phone: data.phone,
-                stol: data.stol.number,
+                stol: stol._id,
                 date: data.stol.date,
                 is_active: true
             })
@@ -103,6 +112,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 email: data.email,
                 stol: data.stol,
                 status: "Active",
+                date: data.date,
                 createdAt: newBooking.createdAt
             }
             sendingBookingToTgChannel(selectedPieceFromBooking)

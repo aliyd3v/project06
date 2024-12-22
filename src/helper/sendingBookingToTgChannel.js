@@ -14,7 +14,7 @@ Created at: ${msg.createdAt.toLocaleDateString() + ' ' + msg.createdAt.toLocaleT
 
 Stol:
     Number: ${message.stol.number},
-    Date: ${message.stol.date.toLocaleDateString() + ' ' + message.stol.date.toLocaleTimeString}`
+    Date: ${message.stol.date}`
 
         return result
     }
@@ -30,7 +30,7 @@ Stol:
 
 Стол:
     Номер: ${msg.stol.number},
-    Дата: ${msg.stol.date.toLocaleDateString() + ' ' + message.stol.date.toLocaleTimeString}`
+    Дата: ${msg.stol.date}`
 
         return result
     }
