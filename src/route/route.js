@@ -56,7 +56,7 @@ router
 
     // Stol route.
     .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
-    .get('/stol', jwtAccessMiddleware, getAllStols)
+    .get('/stol', getAllStols)
     .get('/stol/:id', jwtAccessMiddleware, getOneStol)
     .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
     .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
