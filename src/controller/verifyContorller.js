@@ -85,12 +85,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
 
         // For booking.
         else if (data.stol) {
-            let stol
-            if (data.stol.number) {
-                stol = await Stol.findOne({ number: data.stol.number })
-            }
-
-            console.log(data.stol.date)
+            const stol = await Stol.findOne({ number: data.stol.number })
 
             const newBooking = await Booking.create({
                 customer_name: data.customer_name,
