@@ -44,10 +44,10 @@ exports.createBookingWithVerification = async (req, res) => {
                 }
             })
         }
-        // Checking condidats on data.date
-        const condidats = await Booking.find({ stol: stol._id })
+        // Checking condidats on current date.
+        const condidats = await Booking.find({ stol: stol._id, date: data.date })
         if (condidats) {
-            const condidatsDates = condidats.map(condidat => condidat.date.toLocaleDateString())
+            const condidatsDates = condidats.map(condidat => condidat.date)
             const existsDates = condidatsDates.includes(data.date)
             if (existsDates == true) {
                 // Responding.
@@ -104,7 +104,7 @@ exports.createBookingWithVerification = async (req, res) => {
 
 exports.checkBookingForAvailability = async (req, res) => {
     try {
-        
+
     }
 
     // Error handling.

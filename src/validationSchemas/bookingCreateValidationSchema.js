@@ -45,8 +45,29 @@ exports.bookingCreateValidationSchema = {
         notEmpty: {
             errorMessage: "Date cannot be empty!"
         },
-        isDate: {
-            errorMessage: "Date format valid!"
+        matches: {
+            options: [/^(0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-\d{4}$/],
+            errorMessage: 'Date format is wrong!. True format: dd-MM-yyyy',
+        },
+        escape: true
+    },
+    time: {
+        notEmpty: {
+            errorMessage: "Time cannot be empty!"
+        },
+        matches: {
+            options: [/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/], // Format: HH:mm
+            errorMessage: 'Time format is wrong!. True format: HH:mm',
+        },
+        escape: true
+    },
+    billed_time: {
+        notEmpty: {
+            errorMessage: "Billed time cannot be empty!"
+        },
+        matches: {
+            options: [/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/], // Format: HH:mm
+            errorMessage: 'Time format is wrong!. True format: HH:mm',
         },
         escape: true
     }
