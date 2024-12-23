@@ -1,6 +1,6 @@
 exports.errorHandling = (error, res) => {
     console.log(error)
-    // Responsing.
+    // Responding.
     return res.status(500).send({
         success: false,
         data: null,

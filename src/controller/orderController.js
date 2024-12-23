@@ -15,7 +15,7 @@ exports.createOrderWithVerification = async (req, res) => {
         // Result validation.
         const { data, error } = validationController(req, res)
         if (error) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -45,7 +45,7 @@ exports.createOrderWithVerification = async (req, res) => {
         // Sending verify message to customer email.
         sendVerifyToEmail(data.email, verifyUrl)
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -66,7 +66,7 @@ exports.getAllActualOrders = async (req, res) => {
         // Getting all orders with status "Pending".
         const orders = await Order.find({ status: "Pending" })
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -89,7 +89,7 @@ exports.getOneOrder = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -102,7 +102,7 @@ exports.getOneOrder = async (req, res) => {
 
         // Checking order for exists.
         if (!order) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -112,7 +112,7 @@ exports.getOneOrder = async (req, res) => {
             })
         }
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -132,7 +132,7 @@ exports.markAsDelivered = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -145,7 +145,7 @@ exports.markAsDelivered = async (req, res) => {
 
         // Checking order for exists.
         if (!order) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -159,7 +159,7 @@ exports.markAsDelivered = async (req, res) => {
         order.status = 'Delivered'
         await Order.findByIdAndUpdate(id, order)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,

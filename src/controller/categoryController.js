@@ -24,7 +24,7 @@ exports.createCategory = async (req, res) => {
         const filePath = req.file.path
         const fileName = req.file.filename
 
-        // Checking name for exists. (If exists responsing error.)
+        // Checking name for existence. (If exists responsing error.)
         const condidat = await Category.findOne({
             $or: [
                 { en_name: data.en_name },
@@ -33,11 +33,11 @@ exports.createCategory = async (req, res) => {
         })
         if (condidat) {
             fs.unlinkSync(filePath)
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
-                error: { message: `Already exists category with name (en or ru).` }
+                error: { message: `Already exists category with current name (en or ru).` }
             })
         }
 
@@ -45,7 +45,7 @@ exports.createCategory = async (req, res) => {
         const { errorSupabase } = await uploadImage(fileName, filePath)
         if (errorSupabase) {
             fs.unlinkSync(filePath)
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -63,7 +63,7 @@ exports.createCategory = async (req, res) => {
             image_name: fileName
         })
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -84,7 +84,7 @@ exports.getAllCategories = async (req, res) => {
         // Getting all categories from database.
         const categories = await Category.find()
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -107,7 +107,7 @@ exports.getOneCategory = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -118,9 +118,9 @@ exports.getOneCategory = async (req, res) => {
         // Searching category with id.
         const category = await Category.findById(id)
 
-        // Checking to exists.
+        // Checking category for existence.
         if (!category) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -128,7 +128,7 @@ exports.getOneCategory = async (req, res) => {
             })
         }
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -151,7 +151,7 @@ exports.getCategoryMeals = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -162,9 +162,9 @@ exports.getCategoryMeals = async (req, res) => {
         // Searching category with id.
         const category = await Category.findById(id)
 
-        // Checking to exists.
+        // Checking category for existence.
         if (!category) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -175,7 +175,7 @@ exports.getCategoryMeals = async (req, res) => {
         // Getting all meals in selected category.
         const meals = await Meal.find({ category: category._id })
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -198,7 +198,7 @@ exports.updateOneCategory = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -206,14 +206,14 @@ exports.updateOneCategory = async (req, res) => {
             })
         }
 
-        // Checking category to exists.
+        // Checking category for existence.
         const category = await Category.findById(id)
         if (!category) {
             if (req.file) {
                 fs.unlinkSync(req.file.path)
             }
 
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -244,7 +244,7 @@ exports.updateOneCategory = async (req, res) => {
                 })
                 if (condidat) {
                     if (condidat._id != id) {
-                        // Responsing.
+                        // Responding.
                         return res.status(400).send({
                             success: false,
                             data: null,
@@ -272,7 +272,7 @@ exports.updateOneCategory = async (req, res) => {
             })
             if (condidat._id != id) {
                 fs.unlinkSync(filePath)
-                // Responsing.
+                // Responding.
                 return res.status(400).send({
                     success: false,
                     data: null,
@@ -296,7 +296,7 @@ exports.updateOneCategory = async (req, res) => {
             const updateCategory = await Category.findByIdAndUpdate(id, category)
         }
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -318,7 +318,7 @@ exports.deleteOneCategory = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -326,10 +326,10 @@ exports.deleteOneCategory = async (req, res) => {
             })
         }
 
-        // Checking category to exists.
+        // Checking category for existence.
         const category = await Category.findById(id)
         if (!category) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -339,19 +339,20 @@ exports.deleteOneCategory = async (req, res) => {
 
         // Deleting meals in category.
         const meals = await Meal.find({ category: id })
-        meals.forEach(meal => {
-            // Deleting images of meals.
-            deleteImage(meal.image_name)
-        })
+
+        // Deleting images of meals from supabase storage.
+        await Promise.all(meals.map(meal => deleteImage(meal.image_name)))
+
+        // Deleting meals in category from database.
         await Meal.deleteMany({ category: id })
 
         // Deleting image of category.
-        deleteImage(category.image_name)
+        await deleteImage(category.image_name)
 
         // Deleting category from database.
         await Category.findByIdAndDelete(id)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -369,23 +370,32 @@ exports.deleteOneCategory = async (req, res) => {
 
 exports.deleteAllCategories = async (req, res) => {
     try {
-        // Checking categories for exists.
+        // Checking categories for existence.
         const categories = await Category.find()
 
-        // Deleting images in categories.
-        categories.forEach(category => {
-            deleteImage(categories[i].image_name)
-        })
+        for (const category of categories) {
+            // Deleting meals in categories.
+            const meals = await Meal.find({ category: category._id })
 
-        // Deleting category from database.
+            // Deleting images of meals from supabase storage.
+            await Promise.all(meals.map(meal => deleteImage(meal.image_name)))
+
+            // Deleting all meals of category from database.
+            await Meal.deleteMany({ category: category._id })
+        }
+
+        // Deleting images in categories from supabase storage.
+        await Promise.all(categories.map(category => deleteImage(category.image_name)))
+
+        // Deleting categories from database.
         await Category.deleteMany()
 
-        // Responsing.
-        return res.status(201).send({
+        // Responding.
+        return res.status(200).send({
             success: true,
             error: false,
             data: {
-                message: "Categories has been deleted successfully."
+                message: "Categories have been deleted successfully."
             }
         })
     }

@@ -22,7 +22,7 @@ exports.createBookingWithVerification = async (req, res) => {
         // Result validation.
         const { data, error } = validationController(req, res)
         if (error) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -35,7 +35,7 @@ exports.createBookingWithVerification = async (req, res) => {
         // Checking stol_number and date for booking exists.
         const stol = await Stol.findOne({ number: data.stol_number })
         if (!stol) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -50,7 +50,7 @@ exports.createBookingWithVerification = async (req, res) => {
             const condidatsDates = condidats.map(condidat => condidat.date.toLocaleDateString())
             const existsDates = condidatsDates.includes(data.date)
             if (existsDates == true) {
-                // Responsing.
+                // Responding.
                 return res.status(400).send({
                     success: false,
                     data: null,
@@ -86,7 +86,7 @@ exports.createBookingWithVerification = async (req, res) => {
         // Sending verify message to customer email.
         sendVerifyToEmail(data.email, verifyUrl)
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -117,7 +117,7 @@ exports.getAllActiveBooking = async (req, res) => {
     try {
         const bookings = await Booking.find().populate('stol').sort({ date: "desc" })/*.limit(10)*/
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -140,7 +140,7 @@ exports.getOneBooking = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -153,7 +153,7 @@ exports.getOneBooking = async (req, res) => {
 
         // Checking stol for exists.
         if (!booking) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -163,7 +163,7 @@ exports.getOneBooking = async (req, res) => {
             })
         }
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,

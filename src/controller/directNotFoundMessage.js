@@ -1,5 +1,5 @@
 exports.directNotFound = (req, res) => {
-    // Responsing.
+    // Responding.
     return res.status(404).send({
         success: false,
         data: null,

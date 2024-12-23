@@ -6,19 +6,19 @@ const fs = require('fs')
 exports.uploadImage = async (fileName, filePath) => {
     const { error } = await supabase.storage
         .from(supabaseBucketName)
-        .upload(fileName, fs.readFileSync(filePath));
+        .upload(fileName, fs.readFileSync(filePath))
     return { errorSupabase: error }
 };
 
 exports.getImageUrl = async (fileName, filePath) => {
     const { data, error } = supabase.storage
         .from(supabaseBucketName)
-        .getPublicUrl(fileName);
+        .getPublicUrl(fileName)
     return data
 };
 
 exports.deleteImage = async (fileName) => {
     await supabase.storage
         .from(supabaseBucketName)
-        .remove(fileName);
+        .remove(fileName)
 };
