@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
         // Checking user and password to valid.
         const user = await Admin.findOne({ username: data.username })
         if (!user) {
-            // Responsing.
+            // Responding.
             return res.status(403).send({
                 success: false,
                 data: null,
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
             })
         }
         if (user.password !== data.password) {
-            // Responsing.
+            // Responding.
             return res.status(403).send({
                 success: false,
                 data: null,
@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
         // Generating token.
         const token = tokenGenerate(user._id)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,

@@ -6,15 +6,15 @@ exports.getAllHistory = async (req, res) => {
     try {
         // Getting all orders with status with "Delivered".
         const orders = await Order.find({ status: 'Delivered' }).sort({ createdAt: "desc" })
-        const books = await Booking.find({ is_active: false }).sort({ date: "desc" })
+        const bookings = await Booking.find({ is_active: false }).sort({ date: "desc" })
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
             data: {
                 message: "History getted is successful.",
-                history: { orders, books }
+                history: { orders, bookings }
             }
         })
     }

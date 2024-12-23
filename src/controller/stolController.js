@@ -8,7 +8,7 @@ exports.createStol = async (req, res) => {
         // Result validation.
         const { data, error } = validationController(req, res)
         if (error) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -21,7 +21,7 @@ exports.createStol = async (req, res) => {
         // Checking stol-number for exists.
         const condidat = await Stol.findOne({ number: data.number })
         if (condidat) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -37,7 +37,7 @@ exports.createStol = async (req, res) => {
             price: data.price
         })
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -58,7 +58,7 @@ exports.getAllStols = async (req, res) => {
         // Getting all stols from database.
         const stols = await Stol.find()
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -81,7 +81,7 @@ exports.getOneStol = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -94,7 +94,7 @@ exports.getOneStol = async (req, res) => {
 
         // Checking stol for exists.
         if (!stol) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -104,7 +104,7 @@ exports.getOneStol = async (req, res) => {
             })
         }
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -127,7 +127,7 @@ exports.updateOneStol = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -140,7 +140,7 @@ exports.updateOneStol = async (req, res) => {
 
         // Checking stol for exists.
         if (!stol) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -164,7 +164,7 @@ exports.updateOneStol = async (req, res) => {
 
         // Checking for changing data.
         if (stol.number == data.number && stol.price == data.price) {
-            // Responsing.
+            // Responding.
             return res.status(201).send({
                 success: true,
                 error: false,
@@ -179,7 +179,7 @@ exports.updateOneStol = async (req, res) => {
         stol.price = data.price
         await Stol.findByIdAndUpdate(id, stol)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -201,7 +201,7 @@ exports.deleteOneStol = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -214,7 +214,7 @@ exports.deleteOneStol = async (req, res) => {
 
         // Checking stol for exists.
         if (!stol) {
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -227,7 +227,7 @@ exports.deleteOneStol = async (req, res) => {
         // Deleting stol from database.
         await Stol.findByIdAndDelete(id)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,

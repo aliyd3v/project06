@@ -33,7 +33,7 @@ exports.createMeal = async (req, res) => {
         })
         if (condidat) {
             fs.unlinkSync(filePath)
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -45,7 +45,7 @@ exports.createMeal = async (req, res) => {
         const selectedCategory = await Category.findById(data.category)
         if (!selectedCategory) {
             fs.unlinkSync(filePath)
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -70,7 +70,7 @@ exports.createMeal = async (req, res) => {
             image_name: fileName
         })
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -111,7 +111,7 @@ exports.getOneMeal = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -129,7 +129,7 @@ exports.getOneMeal = async (req, res) => {
             })
         }
 
-        // Responsing.
+        // Responding.
         return res.status(200).send({
             success: true,
             error: false,
@@ -152,7 +152,7 @@ exports.updateOneMeal = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -166,7 +166,7 @@ exports.updateOneMeal = async (req, res) => {
                 fs.unlinkSync(req.file.path)
             }
 
-            // Responsing.
+            // Responding.
             return res.status(404).send({
                 success: false,
                 data: null,
@@ -196,7 +196,7 @@ exports.updateOneMeal = async (req, res) => {
                 })
                 if (condidat) {
                     if (condidat._id != id) {
-                        // Responsing.
+                        // Responding.
                         return res.status(400).send({
                             success: false,
                             data: null,
@@ -229,7 +229,7 @@ exports.updateOneMeal = async (req, res) => {
             if (condidat._id != id) {
                 fs.unlinkSync(filePath)
 
-                // Responsing.
+                // Responding.
                 return res.status(400).send({
                     success: false,
                     data: null,
@@ -257,7 +257,7 @@ exports.updateOneMeal = async (req, res) => {
             }
         }
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,
@@ -279,7 +279,7 @@ exports.deleteOneMeal = async (req, res) => {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -303,7 +303,7 @@ exports.deleteOneMeal = async (req, res) => {
         // Deleting meal from database.
         await Meal.findByIdAndDelete(id)
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,

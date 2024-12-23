@@ -18,7 +18,7 @@ exports.adminCreate = async (req, res) => {
 
         const condidat = await Admin.findOne({ username: data.username })
         if (condidat) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -31,7 +31,7 @@ exports.adminCreate = async (req, res) => {
         // Writing new admin to database.
         await Admin.create({ username: data.username, password: data.password })
 
-        // Responsing.
+        // Responding.
         return res.status(201).send({
             success: true,
             error: false,

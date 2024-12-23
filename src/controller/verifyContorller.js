@@ -21,28 +21,28 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
     const { params: { id }, query: { token } } = req
     try {
         if (id != 'email-verification') {
-            // Responsing.
+            // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
         // Checking token.        
         if (!token) {
-            // Responsing.
+            // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
 
         // Checking token for valid.
         const { error, data } = verifyToken(token)
         if (error) {
-            // Responsing.
+            // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
         if (!data.nonce) {
-            // Responsing.
+            // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
         const nonce = await TokenStore.findOne({ nonce: data.nonce })
         if (!nonce) {
-            // Responsing.
+            // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
 

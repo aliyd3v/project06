@@ -17,19 +17,19 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
         // Checking header authorization.
         const authHeader = req.headers.authorization
         if (!authHeader) {
-            // Responsing.
+            // Responding.
             return resForbidden(res)
         }
 
         //Checking token for valid.
         const token = authHeader.split(' ')[1]
         if (!token) {
-            // Responsing.
+            // Responding.
             return resForbidden(res)
         }
         const { id } = jwt.verify(token, jwtSecretKey, (error, decoded) => {
             if (error) {
-                // Responsing.
+                // Responding.
                 return resForbidden(res)
             }
             return decoded
@@ -38,7 +38,7 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
         // Checking id to valid.
         const idError = idChecking(req, id)
         if (idError) {
-            // Responsing.
+            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -47,7 +47,7 @@ exports.jwtAccessMiddleware = async function (req, res, next) {
         }
         const admin = await Admin.findById(id)
         if (!admin) {
-            // Responsing.
+            // Responding.
             return resForbidden(res)
         }
 
