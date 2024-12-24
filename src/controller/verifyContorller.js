@@ -93,6 +93,8 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 phone: data.phone,
                 stol: stol._id,
                 date: data.stol.date,
+                time_start: data.stol.time_start,
+                time_end: data.stol.time_end,
                 is_active: true
             })
 

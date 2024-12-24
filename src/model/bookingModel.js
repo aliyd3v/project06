@@ -4,7 +4,9 @@ const bookingSchema = new Schema({
     customer_name: String,
     email: String,
     phone: String,
-    date: Date,
+    date: String,
+    time_start: String,
+    time_end: String,
     is_active: Boolean,
     stol: { type: Schema.Types.ObjectId, ref: 'Stol' }
 }, { timestamps: true })

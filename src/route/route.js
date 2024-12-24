@@ -18,7 +18,7 @@ const { directNotFound } = require('../controller/directNotFoundMessage')
 const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
 const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol, createManyStols, deleteManyStols } = require('../controller/stolController')
 const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
-const { createBookingWithVerification, getAllActiveBooking, getOneBooking } = require('../controller/bookingController')
+const { createBookingWithVerification, getAllActiveBooking, getOneBooking, deleteAllBookings, deactivateBooking } = require('../controller/bookingController')
 const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
 const { verifyTokenAndCreateOrderOrBooking } = require('../controller/verifyContorller')
 
@@ -69,6 +69,8 @@ router
     .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
     .get('/booking', jwtAccessMiddleware, getAllActiveBooking)
     .get('/booking/:id', jwtAccessMiddleware, getOneBooking)
+    .post('/booking/:id/deactivate', jwtAccessMiddleware, deactivateBooking)
+    .post('/delete-all-booking', jwtAccessMiddleware, deleteAllBookings)
 
     // Verify token route.
     .get('/verify/:id', verifyTokenAndCreateOrderOrBooking)
