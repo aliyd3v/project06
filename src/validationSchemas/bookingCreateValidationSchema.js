@@ -40,18 +40,18 @@ exports.bookingCreateValidationSchema = {
             errorMessage: "Stol number must be a number!"
         },
         escape: true
-    },
+    }, 
     date: {
         notEmpty: {
             errorMessage: "Date cannot be empty!"
         },
         matches: {
-            options: [/^(0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-\d{4}$/],
-            errorMessage: 'Date format is wrong!. True format: dd-MM-yyyy',
+            options: [/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/],
+            errorMessage: 'Date format is wrong! True format: yyyy-MM-dd',
         },
         escape: true
     },
-    time: {
+    time_start: {
         notEmpty: {
             errorMessage: "Time cannot be empty!"
         },
@@ -61,7 +61,7 @@ exports.bookingCreateValidationSchema = {
         },
         escape: true
     },
-    billed_time: {
+    time_end: {
         notEmpty: {
             errorMessage: "Billed time cannot be empty!"
         },

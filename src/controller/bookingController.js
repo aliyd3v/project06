@@ -4,6 +4,7 @@ const { Booking } = require("../model/bookingModel");
 const { Stol } = require("../model/stolModel");
 const { TokenStore } = require("../model/tokenStoreModel");
 const { errorHandling } = require("./errorController");
+const { idChecking } = require("./idController");
 const { validationController } = require("./validationController");
 const jwt = require('jsonwebtoken')
 
@@ -45,19 +46,25 @@ exports.createBookingWithVerification = async (req, res) => {
             })
         }
         // Checking condidats on current date.
-        const condidats = await Booking.find({ stol: stol._id, date: data.date })
-        if (condidats) {
-            const condidatsDates = condidats.map(condidat => condidat.date)
-            const existsDates = condidatsDates.includes(data.date)
-            if (existsDates == true) {
-                // Responding.
-                return res.status(400).send({
-                    success: false,
-                    data: null,
-                    error: {
-                        message: `Stol is already booked for ${data.date.toLocaleDateString()}. Please book another stol or another date!`
-                    }
-                })
+        const existingBookings = await Booking.find({ stol: stol._id, date: data.date, is_active: true })
+        if (existingBookings) {
+            for (const existingBooking of existingBookings) {
+                // Checking existing bookings on current time.
+                const existingTimeStart = new Date(`${existingBooking.date} ${existingBooking.time_start}`)
+                const existingTimeEnd = new Date(`${existingBooking.date} ${existingBooking.time_end}`)
+                const newTimeStart = new Date(`${data.date} ${data.time_start}`)
+                const newTimeEnd = new Date(`${data.date} ${data.time_end}`)
+                console.log(existingTimeStart, existingTimeEnd, newTimeStart, newTimeEnd)
+                if (newTimeStart < existingTimeEnd && newTimeEnd > existingTimeStart) {
+                    // Responding.
+                    return res.status(400).send({
+                        success: false,
+                        data: null,
+                        error: {
+                            message: `Stol is already booked for current time. Please book another stol or another time!`
+                        }
+                    })
+                }
             }
         }
 
@@ -69,7 +76,9 @@ exports.createBookingWithVerification = async (req, res) => {
         // Order payload.
         const bookingStol = {
             number: data.stol_number,
-            date: data.date
+            date: data.date,
+            time_start: data.time_start,
+            time_end: data.time_end
         }
         const booking = {
             customer_name: data.customer_name,
@@ -148,10 +157,8 @@ exports.getOneBooking = async (req, res) => {
             })
         }
 
-        // Geting a stol from database via id.
+        // Geting a booking from database via id and checking for existence.
         const booking = await Booking.findById(id).populate('stol')
-
-        // Checking stol for exists.
         if (!booking) {
             // Responding.
             return res.status(404).send({
@@ -171,6 +178,74 @@ exports.getOneBooking = async (req, res) => {
                 message: "Booking getted successfully.",
                 booking
             }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.deactivateBooking = async (req, res) => {
+    const { params: { id } } = req
+    try {
+        // Checking id to valid.
+        const idError = idChecking(req, id)
+        if (idError) {
+            // Responding.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: idError
+            })
+        }
+
+        // Geting a booking from database via id and checking for existence.
+        const booking = await Booking.findById(id).populate('stol')
+        if (!booking) {
+            // Responding.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: {
+                    message: "Booking is not found!"
+                }
+            })
+        }
+
+        // Writing changes to database.
+        booking.is_active = false
+        await Booking.findByIdAndUpdate(id, booking)
+
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: { message: "Booking has been deactivated successfully." }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.deleteAllBookings = async (req, res) => {
+    try {
+        // Checking bookings for existence.
+        const bookings = await Booking.find()
+        if (bookings) {
+            // Deleting bookings from database.
+            await Booking.deleteMany()
+        }
+
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: { message: "Bookings have been deleted successfully." }
         })
     }
 
