@@ -1,14 +1,10 @@
 const { Order } = require("../model/orderModel")
 const { errorHandling } = require("./errorController")
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey, domain } = require('../config/config')
+const { domain } = require('../config/config')
 const { validationController } = require("./validationController")
 const { sendVerifyToEmail } = require("../helper/sendToMail")
 const { TokenStore } = require("../model/tokenStoreModel")
-
-const generateTokenWithOrder = (payload) => {
-    return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
-}
+const { generateToken } = require("./tokenController")
 
 exports.createOrderWithVerification = async (req, res) => {
     try {
@@ -39,7 +35,7 @@ exports.createOrderWithVerification = async (req, res) => {
         }
 
         // Generate token with order for verify token.
-        const token = generateTokenWithOrder(order)
+        const token = generateToken(order)
         const verifyUrl = `${domain}/verify/email-verification?token=${token}`
 
         // Sending verify message to customer email.
@@ -165,8 +161,8 @@ exports.markAsDelivered = async (req, res) => {
             error: false,
             data: { message: "Order status has been updated successfully." }
         })
-    } 
-    
+    }
+
     // Error handling.
     catch (error) {
         errorHandling(error, res)

@@ -1,22 +1,12 @@
-const { jwtSecretKey, domain } = require("../config/config");
-const { sendVerifyToEmail } = require("../helper/sendToMail");
-const { Booking } = require("../model/bookingModel");
-const { Stol } = require("../model/stolModel");
-const { TokenStore } = require("../model/tokenStoreModel");
-const { errorHandling } = require("./errorController");
-const { idChecking } = require("./idController");
-const { validationController } = require("./validationController");
-const jwt = require('jsonwebtoken')
-
-const generateTokenWithBooking = (payload) => {
-    return jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' });
-}
-
-const verifyToken = (token) => {
-    return jwt.verify(token, jwtSecretKey, (error, decoded) => {
-        return { data: decoded, error }
-    })
-}
+const { domain } = require("../config/config")
+const { sendVerifyToEmail } = require("../helper/sendToMail")
+const { Booking } = require("../model/bookingModel")
+const { Stol } = require("../model/stolModel")
+const { TokenStore } = require("../model/tokenStoreModel")
+const { errorHandling } = require("./errorController")
+const { idChecking } = require("./idController")
+const { generateToken } = require("./tokenController")
+const { validationController } = require("./validationController")
 
 exports.createBookingWithVerification = async (req, res) => {
     try {
@@ -89,7 +79,7 @@ exports.createBookingWithVerification = async (req, res) => {
         }
 
         // Generate token with order for verify token.
-        const token = generateTokenWithBooking(booking)
+        const token = generateToken(booking)
         const verifyUrl = `${domain}/verify/email-verification?token=${token}`
 
         // Sending verify message to customer email.
@@ -111,9 +101,33 @@ exports.createBookingWithVerification = async (req, res) => {
     }
 }
 
+// Thinking....
 exports.checkBookingForAvailability = async (req, res) => {
+    const { query: { date, time } } = req
     try {
+        // query: { date: '2024-12-25', time: '17:00' }
+        // Thinking.....
+    }
 
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
+exports.getAllBooking = async (req, res) => {
+    try {
+        const bookings = await Booking.find().populate('stol').sort({ date: "desc" })/*.limit(10)*/
+
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Getted all bookings.",
+                bookings
+            }
+        })
     }
 
     // Error handling.
@@ -124,7 +138,7 @@ exports.checkBookingForAvailability = async (req, res) => {
 
 exports.getAllActiveBooking = async (req, res) => {
     try {
-        const bookings = await Booking.find().populate('stol').sort({ date: "desc" })/*.limit(10)*/
+        const bookings = await Booking.find({ is_active: true }).populate('stol').sort({ date: "desc" })/*.limit(10)*/
 
         // Responding.
         return res.status(200).send({
