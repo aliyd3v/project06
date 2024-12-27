@@ -168,3 +168,22 @@ exports.markAsDelivered = async (req, res) => {
         errorHandling(error, res)
     }
 }
+
+exports.deleteAllOrders = async (req, res) => {
+    try {
+        // Deleting all orders from database.
+        await Order.deleteMany()
+
+        // Responding.
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: { message: "Orders have been deleted successfully." }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
