@@ -22,8 +22,9 @@ const { createBookingWithVerification, getAllActiveBooking, getOneBooking, delet
 const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
 const { verifyTokenAndCreateOrderOrBooking, createVerifyForGetAllBookingAndOrder } = require('../controller/verifyContorller')
 const { createVerifyTokenForGetAllBookingsOrdersValidationSchema } = require('../validationSchemas/createVerifyTokenForGetAllBookingsOrdersValidationSchema')
-const { getAllCustomersAllTime, searchCustomer } = require('../controller/customerContoller')
+const { getAllCustomersAllTime, searchCustomer, getOneCustomer } = require('../controller/customerContoller')
 const { searchCustomerValidatorSchema } = require('../validationSchemas/searchCustomerValidatorSchema')
+const { getOneCustomerValidationSchema } = require('../validationSchemas/getOneCustomerValidationSchema')
 
 const router = require('express').Router()
 
@@ -57,7 +58,7 @@ router
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
 
-    // Testing.
+    // For testing order.
     .post('/order/delete-all', jwtAccessMiddleware, deleteAllOrders)
 
     // Stol route.
@@ -67,7 +68,7 @@ router
     .post('/stol/:id/update', jwtAccessMiddleware, checkSchema(stolUpdateValidationSchema), updateOneStol)
     .post('/stol/:id/delete', jwtAccessMiddleware, deleteOneStol)
 
-    // For testing.
+    // For testing stol.
     .post('/stol/create-many', jwtAccessMiddleware, createManyStols)
     .post('/stol/delete-all', jwtAccessMiddleware, deleteManyStols)
 
@@ -78,6 +79,8 @@ router
     .get('/booking/availability', checkBookingForAvailability)
     .get('/booking/:id', jwtAccessMiddleware, getOneBooking)
     .post('/booking/:id/deactivate', deactivateBooking)
+
+    // For testing booking.
     .post('/booking/delete-all', jwtAccessMiddleware, deleteAllBookings)
 
     // Getting all bookings and orders for customer.
@@ -86,6 +89,7 @@ router
 
     // Getting customer-cabinet for admin.
     .get('/customer', jwtAccessMiddleware, getAllCustomersAllTime)
+    .get('/customer/get-one', jwtAccessMiddleware, checkSchema(getOneCustomerValidationSchema), getOneCustomer)
     .get('/customer/search', jwtAccessMiddleware, checkSchema(searchCustomerValidatorSchema), searchCustomer)
 
     // Verify token route.
