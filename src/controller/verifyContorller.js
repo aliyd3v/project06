@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const { TokenStore } = require('../model/tokenStoreModel')
 const { Order } = require('../model/orderModel')
 const { succesMsgToHtml } = require('../helper/successMsgToHtml')
@@ -7,25 +6,78 @@ const { gettingMealsFromOrder } = require('../helper/gettingMealsFromOrder')
 const { Booking } = require('../model/bookingModel')
 const { sendingBookingToTgChannel } = require('../helper/sendingBookingToTgChannel')
 const { errorHandling } = require('./errorController')
-const { jwtSecretKey } = require('../config/config')
 const { Stol } = require('../model/stolModel')
 const { verifyFailedHtml } = require('../helper/verifyFailedHtml')
+const { generateToken, verifyToken } = require('./tokenController')
 
-const verifyToken = (token) => {
-    return jwt.verify(token, jwtSecretKey, (error, decoded) => {
-        return { data: decoded, error }
-    })
+exports.createVerifyForGetAllBookingAndOrder = async (req, res) => {
+    try {
+        // Result validation.
+        const { data, error } = validationController(req, res)
+        if (error) {
+            // Responding.
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
+
+        // Getting all bookings and orders with validated email.
+        const bookings = await Booking.find({ email: data.email, is_active: true }).populate('stol')
+        const orders = await Order.find({ email: data.email, status: "Pending" }).populate('meals')
+
+        // Checking bookings and order for existence.
+        if (!bookings || !orders) {
+            // Responding.
+            return res.status(404).send({
+                success: false,
+                data: null,
+                error: {
+                    message: `Bookings or Orders is not found with email ${data.email}!`
+                }
+            })
+        }
+
+        // Create nonce for once using from token.
+        const nonce = crypto.randomUUID()
+        await TokenStore.create({ nonce })
+
+        // Payload for token.
+        const payload = {
+            bookings, orders, nonce
+        }
+
+        // Generate token with bookings and orders for verify token.
+        const token = generateToken(payload)
+        const verifyUrl = `${domain}/verify/email-verification?token=${token}`
+
+        // Sending verify message to customer email.
+        sendVerifyToEmail(data.email, verifyUrl)
+
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Verify URL has been sended to your email."
+            }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
 }
 
 exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
     const { params: { id }, query: { token } } = req
     try {
-        if (id != 'email-verification') {
-            // Responding.
-            return res.status(400).send(verifyFailedHtml)
-        }
-        // Checking token.        
-        if (!token) {
+        // Checking id and token.
+        if (id != 'email-verification' || !token) {
             // Responding.
             return res.status(400).send(verifyFailedHtml)
         }
@@ -46,7 +98,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
             return res.status(400).send(verifyFailedHtml)
         }
 
-        // Writing to database.
+        // Writing to database |OR| Getting bookings and orders for customer-cabinet.
 
         // For order.
         if (data.meals) {
@@ -119,6 +171,11 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
 
             // Responsing with html.
             return res.status(200).send(html)
+        }
+
+        // For Getting bookings and orders for customer-cabinet.
+        else if (data.bookings || data.orders) {
+            // Thinking....
         }
     }
 

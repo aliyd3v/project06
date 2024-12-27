@@ -12,15 +12,18 @@ const { mealCreateValidationSchema } = require('../validationSchemas/mealCreateV
 const { mealUpdateValidationSchema } = require('../validationSchemas/mealUpdateValidationSchema')
 const { upload } = require('../helper/upload')
 const { orderCreateValidationSchema } = require('../validationSchemas/orderCreateValidationSchema')
-const { getAllActualOrders, createOrderWithVerification, getOneOrder, markAsDelivered } = require('../controller/orderController')
-const { getAllHistory } = require('../controller/historyController')
+const { getAllActualOrders, createOrderWithVerification, getOneOrder, markAsDelivered, deleteAllOrders } = require('../controller/orderController')
+const { getAllHistory, deleteAllHistory } = require('../controller/historyController')
 const { directNotFound } = require('../controller/directNotFoundMessage')
 const { stolCreateValidationSchema } = require('../validationSchemas/stolCreateValidationSchema')
 const { createStol, getAllStols, getOneStol, updateOneStol, deleteOneStol, createManyStols, deleteManyStols } = require('../controller/stolController')
 const { stolUpdateValidationSchema } = require('../validationSchemas/stolUpdateValidationSchema')
-const { createBookingWithVerification, getAllActiveBooking, getOneBooking, deleteAllBookings, deactivateBooking } = require('../controller/bookingController')
+const { createBookingWithVerification, getAllActiveBooking, getOneBooking, deleteAllBookings, deactivateBooking, getAllBooking, checkBookingForAvailability } = require('../controller/bookingController')
 const { bookingCreateValidationSchema } = require('../validationSchemas/bookingCreateValidationSchema')
-const { verifyTokenAndCreateOrderOrBooking } = require('../controller/verifyContorller')
+const { verifyTokenAndCreateOrderOrBooking, createVerifyForGetAllBookingAndOrder } = require('../controller/verifyContorller')
+const { createVerifyTokenForGetAllBookingsOrdersValidationSchema } = require('../validationSchemas/createVerifyTokenForGetAllBookingsOrdersValidationSchema')
+const { getAllCustomersAllTime, searchCustomer } = require('../controller/customerContoller')
+const { searchCustomerValidatorSchema } = require('../validationSchemas/searchCustomerValidatorSchema')
 
 const router = require('express').Router()
 
@@ -39,7 +42,7 @@ router
     .get('/category/:id/meals', getCategoryMeals)
     .post('/category/:id/update', jwtAccessMiddleware, upload.single('file'), checkSchema(categoryUpdateValidationSchema), updateOneCategory)
     .post('/category/:id/delete', jwtAccessMiddleware, deleteOneCategory)
-    .post('/categories/delete', jwtAccessMiddleware, deleteAllCategories)
+    .post('/categories/delete-all', jwtAccessMiddleware, deleteAllCategories)
 
     // Meal route.
     .post('/meal/create', jwtAccessMiddleware, upload.single('file'), checkSchema(mealCreateValidationSchema), createMeal)
@@ -54,6 +57,9 @@ router
     .get('/order/:id', jwtAccessMiddleware, getOneOrder)
     .post('/order/:id/delivered', markAsDelivered)
 
+    // Testing.
+    .post('/order/delete-all', jwtAccessMiddleware, deleteAllOrders)
+
     // Stol route.
     .post('/stol/create', jwtAccessMiddleware, checkSchema(stolCreateValidationSchema), createStol)
     .get('/stol', getAllStols)
@@ -63,20 +69,31 @@ router
 
     // For testing.
     .post('/stol/create-many', jwtAccessMiddleware, createManyStols)
-    .post('/stol/delete-many', jwtAccessMiddleware, deleteManyStols)
+    .post('/stol/delete-all', jwtAccessMiddleware, deleteManyStols)
 
     // Booking route.
     .post('/booking/create', checkSchema(bookingCreateValidationSchema), createBookingWithVerification)
-    .get('/booking', jwtAccessMiddleware, getAllActiveBooking)
+    .get('/booking', jwtAccessMiddleware, getAllBooking)
+    .get('/booking/active', jwtAccessMiddleware, getAllActiveBooking)
+    .get('/booking/availability', checkBookingForAvailability)
     .get('/booking/:id', jwtAccessMiddleware, getOneBooking)
-    .post('/booking/:id/deactivate', jwtAccessMiddleware, deactivateBooking)
-    .post('/delete-all-booking', jwtAccessMiddleware, deleteAllBookings)
+    .post('/booking/:id/deactivate', deactivateBooking)
+    .post('/booking/delete-all', jwtAccessMiddleware, deleteAllBookings)
+
+    // Getting all bookings and orders for customer.
+    .post('/customer-cabinet/create-verify', checkSchema(createVerifyTokenForGetAllBookingsOrdersValidationSchema), createVerifyForGetAllBookingAndOrder)
+    // .get('/customer-cabinet/:id')
+
+    // Getting customer-cabinet for admin.
+    .get('/customer', jwtAccessMiddleware, getAllCustomersAllTime)
+    .get('/customer/search', jwtAccessMiddleware, checkSchema(searchCustomerValidatorSchema), searchCustomer)
 
     // Verify token route.
     .get('/verify/:id', verifyTokenAndCreateOrderOrBooking)
 
     // History route.
     .get('/history', jwtAccessMiddleware, getAllHistory)
+    .post('/history/delete-all', jwtAccessMiddleware, deleteAllHistory)
 
     // Direct not found message.
     .use(directNotFound)
