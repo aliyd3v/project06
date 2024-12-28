@@ -368,6 +368,44 @@ exports.deleteOneCategory = async (req, res) => {
     }
 }
 
+exports.searchingCategory = async (req, res) => {
+    try {
+        // Result validation.
+        const { data, error } = validationController(req, res)
+        if (error) {
+            return res.status(400).send({
+                success: false,
+                data: null,
+                error: {
+                    message: error
+                }
+            })
+        }
+
+        const categories = await Category.find({
+            $or: [
+                { en_name: { $regex: data.key, $options: "i" } },
+                { ru_name: { $regex: data.key, $options: "i" } }
+            ]
+        })
+
+        // Responding.
+        return res.status(201).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Searching categories have been successfully.",
+                categories
+            }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+        errorHandling(error, res)
+    }
+}
+
 exports.deleteAllCategories = async (req, res) => {
     try {
         // Checking categories for existence.
