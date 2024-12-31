@@ -8,7 +8,15 @@ exports.getAllCustomersAllTime = async (req, res) => {
         const bookings = await Booking.find()
         const orders = await Order.find()
 
-        const customers = [bookings, orders]
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: {
+                message: "Getting all customers is successfully.",
+                customers: { bookings, orders }
+            }
+        })
     }
 
     // Error handling
@@ -17,13 +25,11 @@ exports.getAllCustomersAllTime = async (req, res) => {
     }
 }
 
-exports.searchCustomer = async (req, res) => {
-    const { query } = req
+exports.getOneCustomer = async (req, res) => {
     try {
         // Result validation.
-        const { error } = validationController(req, res)
+        const { data, error } = validationController(req, res)
         if (error) {
-            // Responding.
             return res.status(400).send({
                 success: false,
                 data: null,
@@ -33,34 +39,22 @@ exports.searchCustomer = async (req, res) => {
             })
         }
 
-        // Checking existence params.
-        const customer_name = query.customer_name ? { customer_name: { $regex: query.customer_name, $options: "i" } } : false
-        const email = query.email ? { email: { $regex: query.email, $options: "i" } } : false
-        const phone = query.phone ? { phone: { $regex: query.phone, $options: "i" } } : false
-
-        // Searching booking.
-        const bookings = await Booking.find({
-            ...customer_name, ...email, ...phone
-        })
-
-        // Searching order.
-        const orders = await Order.find({
-            ...customer_name, ...email, ...phone
-        })
+        // Getting customer bookings and orders from database by email.
+        const bookings = await Booking.find({ email: data.email })
+        const orders = await Order.find({ email: data.email })
 
         // Responding.
         return res.status(200).send({
             success: true,
             error: false,
             data: {
-                message: "Searching successfully.",
-                bookings,
-                orders
+                message: `Getted customer and him bookings and orders with email ${data.email}`,
+                customer: { bookings, orders }
             }
         })
     }
 
-    // Error handling
+    // Error handling.
     catch (error) {
         errorHandling(error, res)
     }

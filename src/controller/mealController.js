@@ -318,3 +318,28 @@ exports.deleteOneMeal = async (req, res) => {
         errorHandling(error, res)
     }
 }
+
+exports.deleteManyMeals = async (req, res) => {
+    try {
+        // Deleting images of meals from supabase database.
+        const meals = await Meal.find()
+        for (const meal of meals) {
+            await deleteImage(meal.image_name)
+        }
+
+        // Deleting all meals from database.
+        await Meal.deleteMany()
+
+        // Responding.
+        return res.status(200).send({
+            success: true,
+            error: false,
+            data: { message: "Meals have been deleted successfully." }
+        })
+    }
+
+    // Error handling.
+    catch (error) {
+
+    }
+}
