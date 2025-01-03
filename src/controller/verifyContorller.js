@@ -9,6 +9,9 @@ const { errorHandling } = require('./errorController')
 const { Stol } = require('../model/stolModel')
 const { verifyFailedHtml } = require('../helper/verifyFailedHtml')
 const { generateToken, verifyToken } = require('./tokenController')
+const { validationController } = require('./validationController')
+const { domain } = require('../config/config')
+const { sendVerifyToEmail } = require('../helper/sendToMail')
 
 exports.createVerifyForGetAllBookingAndOrder = async (req, res) => {
     try {
