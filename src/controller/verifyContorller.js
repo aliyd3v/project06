@@ -98,8 +98,8 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
             return res.status(400).send(verifyFailedHtml)
         }
 
-        // Writing to database |OR| Getting bookings and orders for customer-cabinet.
-
+        // Writing to database 
+        
         // For order.
         if (data.meals) {
             const newOrder = await Order.create({
@@ -109,13 +109,13 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 meals: data.meals,
                 status: "Pending"
             })
-
+            
             // Deleting nonce from database for once using from token.
             await TokenStore.findByIdAndDelete(nonce._id)
-
+            
             // Getting meals from order.
             const meals = await gettingMealsFromOrder(data.meals)
-
+            
             // Sending order to telegram channel.
             const selectedPieceFromOrder = {
                 id: newOrder._id,
@@ -127,7 +127,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 createdAt: newOrder.createdAt
             }
             sendingOrderToTgChannel(selectedPieceFromOrder)
-
+            
             // Create success message to customer.
             const html = succesMsgToHtml(data.customer_name, 'Order')
 
@@ -138,7 +138,7 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
         // For booking.
         else if (data.stol) {
             const stol = await Stol.findOne({ number: data.stol.number })
-
+            
             const newBooking = await Booking.create({
                 customer_name: data.customer_name,
                 email: data.email,
@@ -149,10 +149,10 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
                 time_end: data.stol.time_end,
                 is_active: true
             })
-
+            
             // Deleting nonce from database for once using from token.
             await TokenStore.findByIdAndDelete(nonce._id)
-
+            
             // Sending order to telegram channel.
             const selectedPieceFromBooking = {
                 id: newBooking._id,
@@ -168,12 +168,12 @@ exports.verifyTokenAndCreateOrderOrBooking = async (req, res) => {
 
             // Create success message to customer.
             const html = succesMsgToHtml(data.customer_name, 'Booking')
-
+            
             // Responsing with html.
             return res.status(200).send(html)
         }
 
-        // For Getting bookings and orders for customer-cabinet.
+        // Getting bookings and orders for customer-cabinet.
         else if (data.bookings || data.orders) {
             // Thinking....
         }

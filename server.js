@@ -24,6 +24,4 @@ app.use(express.urlencoded({
 app.use('/', router)
 
 // Register port and run server.
-app.listen(port, () => {
-    console.log(`Server running on port ${port}...`)
-})
+app.listen(port, () => console.log(`Server running on port ${port}`))
