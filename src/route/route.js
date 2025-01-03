@@ -107,4 +107,4 @@ router
     .post('/stol/delete-all', jwtAccessMiddleware, deleteManyStols)
     .post('/meal/delete-all', jwtAccessMiddleware, deleteManyMeals)
 
-module.exports = router
+module.exports = router 
